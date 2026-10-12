@@ -2,9 +2,9 @@ package excepciones;
 /**
  * Se lanza cuando se busca un cliente que no existe
  */
-public class ClienteNoEncontrado extends Exception {
+public class ClienteNoEncontradoException extends Exception {
 
-    public ClienteNoEncontrado(String mensaje) {
+    public ClienteNoEncontradoException(String mensaje) {
         super(mensaje);
     }
 }
