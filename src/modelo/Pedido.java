@@ -3,6 +3,10 @@ package modelo;
 import java.time.LocalDateTime;
 import excepciones.*;
 
+/**
+ * Clase abstracta Pedido que representa un pedido de envio
+ * las subclases definen como se calcula el costo en calcularCosto().
+ */
 public abstract class Pedido implements Rastreable, Facturable {
     private int codigo;
     private Cliente cliente;
@@ -13,13 +17,23 @@ public abstract class Pedido implements Rastreable, Facturable {
     protected static final double COSTO_BASE = 1000.0;
     private Vehiculo vehiculo;
 
-    // Se le asigna valores predeterminado a fechaHora y estado para crear un pedido valido
+    /**
+     * Crea un pedido vacio asignandole la fecha y estado automaticamente
+     */
     public Pedido() {
         this.fechaHora = LocalDateTime.now();
         this.estado = EstadoPedido.PENDIENTE;
     }
 
-    // Los atributos fechaHora y estado se asignan con un valor automaticamente al crear el pedido
+    /**
+     * Crea un pedido con los datos indicados. Fecha y estado se asignan automaticamente
+     * @param codigo codigo de pedido
+     * @param cliente cliente que realiza el pedido
+     * @param destino lugar de destino del pedido
+     * @param pesoKg peso del pedido en kilogramos
+     * @param distanciaKm distancia en kilometros hasta el destino
+     * @throws PedidoInvalidoException si algunos de los datos no es valido
+     */
     public Pedido(int codigo, Cliente cliente, String destino, double pesoKg, double distanciaKm) throws PedidoInvalidoException {
         setCodigo(codigo);
         setCliente(cliente);

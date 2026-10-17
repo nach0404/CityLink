@@ -1,12 +1,25 @@
 package modelo;
 
+/**
+ * Clase cliente que representa a un cliente
+ */
 public class Cliente {
 
     private int codigo;
     private String nombre, telefono, zona;
 
+    /**
+     * Crea un cliente sin datos
+     */
     public Cliente() {}
 
+    /**
+     * Crea un cliente con los datos indicados
+     * @param codigo codigo del cliente
+     * @param nombre nombre del cliente
+     * @param telefono telefono del cliente
+     * @param zona zona de la ciudad del cliente
+     */
     public Cliente(int codigo, String nombre, String telefono, String zona) {
         setCodigo(codigo);
         setNombre(nombre);
