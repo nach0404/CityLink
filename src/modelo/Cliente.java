@@ -57,7 +57,7 @@ public class Cliente {
      */
     public void setCodigo(int codigo) {
         if(codigo <= 0) {
-            throw new IllegalArgumentException("Error: el codigo debe ser mayor a 0");
+            throw new IllegalArgumentException("Error: el codigo de cliente no es valido");
         }
 
         this.codigo = codigo;
