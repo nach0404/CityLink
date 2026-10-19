@@ -7,7 +7,9 @@ import excepciones.PedidoInvalidoException;
 
 /**
  * Representa a un repartidor de CityLink.
- * Administra su vehículo y los pedidos asignados.
+ * Administra su vehículo y los pedidos que tiene asignados.
+ * También permite consultar el estado de sus pedidos y calcular
+ * la comisión correspondiente a las entregas realizadas.
  */
 public class Repartidor implements Rastreable, Facturable {
 
@@ -21,7 +23,13 @@ public class Repartidor implements Rastreable, Facturable {
     private static final double PORCENTAJE_COMISION = 0.10;
 
     /**
-     * Constructor completo.
+     * Construye un repartidor con su legajo, nombre y vehículo.
+     * Inicializa el arreglo donde se almacenarán sus pedidos.
+     *
+     * @param legajo número identificatorio del repartidor; debe ser mayor que cero
+     * @param nombre nombre del repartidor; no puede estar vacío
+     * @param vehiculo vehículo asignado al repartidor; no puede ser nulo
+     * @throws IllegalArgumentException si el legajo, el nombre o el vehículo no son válidos
      */
     public Repartidor(int legajo, String nombre, Vehiculo vehiculo) {
         setLegajo(legajo);
@@ -34,24 +42,46 @@ public class Repartidor implements Rastreable, Facturable {
 
     // Getters
 
+    /**
+     * Obtiene el legajo del repartidor.
+     *
+     * @return número identificatorio del repartidor
+     */
     public int getLegajo() {
         return legajo;
     }
 
+    /**
+     * Obtiene el nombre del repartidor.
+     *
+     * @return nombre del repartidor
+     */
     public String getNombre() {
         return nombre;
     }
 
+    /**
+     * Obtiene el vehículo asignado al repartidor.
+     *
+     * @return vehículo asignado
+     */
     public Vehiculo getVehiculo() {
         return vehiculo;
     }
 
+    /**
+     * Obtiene la cantidad de pedidos asignados al repartidor.
+     *
+     * @return cantidad actual de pedidos asignados
+     */
     public int getCantidadPedidos() {
         return cantidadPedidos;
     }
 
     /**
      * Devuelve una copia del arreglo de pedidos asignados.
+     *
+     * @return arreglo con los pedidos asignados hasta el momento
      */
     public Pedido[] getPedidos() {
         Pedido[] copia = new Pedido[cantidadPedidos];
@@ -65,6 +95,12 @@ public class Repartidor implements Rastreable, Facturable {
 
     // Setters con validación
 
+    /**
+     * Establece el legajo del repartidor.
+     *
+     * @param legajo nuevo número identificatorio
+     * @throws IllegalArgumentException si el legajo es menor o igual que cero
+     */
     public void setLegajo(int legajo) {
         if (legajo <= 0) {
             throw new IllegalArgumentException(
@@ -75,6 +111,12 @@ public class Repartidor implements Rastreable, Facturable {
         this.legajo = legajo;
     }
 
+    /**
+     * Establece el nombre del repartidor.
+     *
+     * @param nombre nuevo nombre del repartidor
+     * @throws IllegalArgumentException si el nombre es nulo o está vacío
+     */
     public void setNombre(String nombre) {
         if (nombre == null || nombre.isBlank()) {
             throw new IllegalArgumentException(
@@ -85,6 +127,12 @@ public class Repartidor implements Rastreable, Facturable {
         this.nombre = nombre.trim();
     }
 
+    /**
+     * Asigna un vehículo al repartidor.
+     *
+     * @param vehiculo vehículo que se desea asignar
+     * @throws IllegalArgumentException si el vehículo es nulo
+     */
     public void setVehiculo(Vehiculo vehiculo) {
         if (vehiculo == null) {
             throw new IllegalArgumentException(
@@ -96,7 +144,13 @@ public class Repartidor implements Rastreable, Facturable {
     }
 
     /**
-     * Sobrecarga: asigna un pedido usando el vehículo del repartidor.
+     * Asigna un pedido utilizando el vehículo actual del repartidor.
+     *
+     * @param pedido pedido que se desea asignar
+     * @throws CapacidadExcedidaException si el vehículo no puede transportar el pedido
+     * @throws AlmacenamientoLlenoException si se alcanzó el máximo de pedidos
+     * @throws PedidoInvalidoException si el pedido no cumple alguna validación del sistema
+     * @throws IllegalArgumentException si el pedido es nulo o ya está asignado
      */
     public void asignarPedido(Pedido pedido)
             throws CapacidadExcedidaException,
@@ -106,8 +160,19 @@ public class Repartidor implements Rastreable, Facturable {
         asignarPedido(pedido, this.vehiculo);
     }
 
+    
     /**
-     * Sobrecarga: asigna un pedido utilizando el vehículo indicado.
+     * Asigna un pedido utilizando el vehículo indicado.
+     * Verifica que los datos sean válidos, que exista espacio disponible
+     * y que el vehículo pueda transportar el pedido.
+     *
+     * @param pedido pedido que se desea asignar
+     * @param vehiculoAsignado vehículo que se utilizará para transportar el pedido
+     * @throws CapacidadExcedidaException si el vehículo no puede transportar el pedido
+     * @throws AlmacenamientoLlenoException si se alcanzó el máximo de pedidos
+     * @throws PedidoInvalidoException si el pedido no cumple alguna validación del sistema
+     * @throws IllegalArgumentException si el pedido o el vehículo son nulos,
+     * o si el pedido ya está asignado
      */
     public void asignarPedido(Pedido pedido, Vehiculo vehiculoAsignado)
             throws CapacidadExcedidaException,
@@ -156,8 +221,13 @@ public class Repartidor implements Rastreable, Facturable {
     }
 
     /**
-     * Registra la entrega de un pedido asignado.
-     * El pedido debe estar en camino.
+     * Registra la entrega de un pedido previamente asignado.
+     * El pedido debe encontrarse en un estado que permita marcarlo
+     * como entregado.
+     *
+     * @param pedido pedido cuya entrega se desea registrar
+     * @throws IllegalArgumentException si el pedido es nulo o no está asignado
+     * @throws EstadoInvalidoException si el cambio al estado ENTREGADO no está permitido
      */
     public void registrarEntrega(Pedido pedido) {
         if (pedido == null) {
@@ -185,7 +255,11 @@ public class Repartidor implements Rastreable, Facturable {
     }
 
     /**
-     * Devuelve el estado general del repartidor.
+     * Obtiene un resumen de los estados de los pedidos del repartidor.
+     * Cuenta los pedidos pendientes, en camino y entregados.
+     *
+     * @return texto con el nombre del repartidor y la cantidad de pedidos
+     * en cada estado
      */
     @Override
     public String obtenerEstadoActual() {
@@ -212,7 +286,10 @@ public class Repartidor implements Rastreable, Facturable {
     }
 
     /**
-     * Calcula el 10 % del importe de los pedidos entregados.
+     * Calcula la comisión del repartidor como el 10 % del importe
+     * total de los pedidos que se encuentran en estado ENTREGADO.
+     *
+     * @return importe de la comisión correspondiente a las entregas realizadas
      */
     @Override
     public double calcularImporte() {
@@ -227,6 +304,12 @@ public class Repartidor implements Rastreable, Facturable {
         return totalEntregado * PORCENTAJE_COMISION;
     }
 
+    /**
+     * Devuelve una representación textual del repartidor,
+     * incluyendo su legajo, nombre, patente del vehículo y cantidad de pedidos.
+     *
+     * @return descripción del repartidor
+     */
     @Override
     public String toString() {
         return "Legajo: " + legajo
