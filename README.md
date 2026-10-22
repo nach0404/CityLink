@@ -31,10 +31,13 @@ Bicicleta	10 kg ||	15 km/h ||	$50	|| 0 min
 Moto	30 kg ||	40 km/h ||	$120 ||	5 min
 Camioneta	500 kg ||	30 km/h || $300 ||	10 min
 
-## Desiciones de diseño
+## Decisiones de diseño
 - Los setters de `Cliente` validan con `IllegalArgumentException`, porque
   ninguna de las excepciones propias aplica a datos inválidos de un cliente.
 - Se decidió mantener los valores originales de capacidad de carga, velocidad y costo por kilómetro establecidos en el PDF de la consigna para cada tipo de vehículo, sin realizar modificaciones.
+- `Pedido` guarda el vehiculo pero no lo recibe en el constructor, porque el vehiculo no se conoce al crear el pedido, se le asigna cuando un repartidor toma el pedido. Por eso `calcularImporte()` lanza `IllegalStateException` si todavia no hay vehiculo.
+- La existencia del cliente la controla el gestor y no `Pedido`, porque es el que tiene la lista de clientes registrados.
+- Un pedido se crea con fecha y estado automaticamente(fecha actual y `PENDIENTE`) para que no se cree uno con un estado inicial incorrecto o una fecha falsa.
 
 ## Uso de IA
 **Claude**
