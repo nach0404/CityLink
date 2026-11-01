@@ -203,6 +203,11 @@ public class CityLink {
         pedido.cambiarEstado(nuevo);
     }
 
+    /**
+     * Lista todos los pedidos cargados, uno por linea
+     * @return texto con el codigo, tipo, costo y tiempo estimado de cada pedido.
+     * si un pedido no tiene vehiculo asignado, solo muestra codigo y tipo.
+     */
     public String listarPedidos() {
         String acumulador = "";
 
@@ -226,6 +231,28 @@ public class CityLink {
         }
 
         return acumulador;
+    }
+
+    /**
+     * Consulta el estado de un pedido
+     * @param codigoPedido codigo del pedido
+     * @return texto del nombre de estado
+     * @throws PedidoInvalidoException si no se encuentra un pedido con ese codigo
+     */
+    public String consultarEstadoPedido(int codigoPedido) throws PedidoInvalidoException {
+        Pedido p = buscarPedido(codigoPedido);
+        return p.obtenerEstadoActual();
+    }
+
+    /**
+     * Consulta el resumen de estados de los pedidos de un repartidor
+     * @param legajo legajo del repartidor
+     * @return texto con el resumen de los estados de pedidos
+     * @throws IllegalArgumentException si no se encuentra un repartidor con ese legajo
+     */
+    public String consultarEstadoRepartidor(int legajo) {
+        Repartidor r = buscarRepartidor(legajo);
+        return r.obtenerEstadoActual();
     }
 
 
