@@ -203,6 +203,31 @@ public class CityLink {
         pedido.cambiarEstado(nuevo);
     }
 
+    public String listarPedidos() {
+        String acumulador = "";
+
+        for(int i = 0; i < cantPedidos; i++) {
+
+            Vehiculo v = pedidos[i].getVehiculo();
+
+            if(v == null) {
+                acumulador += "| Codigo: " + pedidos[i].getCodigo() + 
+                             " - Tipo: " + pedidos[i].getClass().getSimpleName() + 
+                             " - Sin vehiculo asignado" + "\n";
+            } else {
+                double costo = pedidos[i].calcularCosto(v);
+                double tiempo = v.calcularTiempoEntrega(pedidos[i].getDistanciaKm());
+                
+                acumulador += "| Codigo: " + pedidos[i].getCodigo() + 
+                             " - Tipo: " + pedidos[i].getClass().getSimpleName() + 
+                             " - Costo: " + String.format("%.2f", costo) + " - Tiempo: " + tiempo + " min" + "\n";
+
+            }
+        }
+
+        return acumulador;
+    }
+
 
 
 }
