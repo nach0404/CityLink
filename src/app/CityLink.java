@@ -255,6 +255,38 @@ public class CityLink {
         return r.obtenerEstadoActual();
     }
 
+    /**
+     * Devuelve importe total de todos los pedidos
+     * @return double del importe de todos los pedidos
+     * solo se suman los pedidos que ya tienen vehiculo
+     */
+    public double calcularImporteTotalPedidos() {
+        double totalPedidos = 0;
+        for(int i = 0; i < cantPedidos; i++) {
+            if(pedidos[i].getVehiculo() != null) {
+                totalPedidos += pedidos[i].calcularImporte();
+            }
+        }
+
+        return totalPedidos;
+    }
+
+    /**
+     * Devuelve la comision de los pedidos entregados de cada repartidor, uno por linea
+     * @return texto con nombre y comisiones de entregados
+     */
+    public String listarComisiones() {
+        String acumulador = "";
+
+        for(int i = 0; i < cantRepartidores; i++) {
+            acumulador += "| Nombre: " + repartidores[i].getNombre() + " - Comisiones: " + repartidores[i].calcularImporte() + "\n";
+        }
+
+        return acumulador;
+    }
+
+
+
 
 
 }
