@@ -285,8 +285,85 @@ public class CityLink {
         return acumulador;
     }
 
+    /**
+     * Datos de prueba, carga clientes, repartidores y pedidos. Se de llamar una sola vez.
+     * @throws AlmacenamientoLlenoException si la cantidad excede a la capacidad
+     * @throws CapacidadExcedidaException si el vehiculo no puede transportar el pedido
+     * @throws ClienteNoEncontradoException si el cliente de algun pedido no esta registrado
+     * @throws PedidoInvalidoException si algun dato de un pedido no es valido
+     */
+    public void cargarDatosPrueba() throws AlmacenamientoLlenoException, CapacidadExcedidaException, ClienteNoEncontradoException, PedidoInvalidoException {
+
+        Cliente c1 = new Cliente(1, "Martin Gomez", "2657-400101", "Centro");
+        registrarCliente(c1);
+
+        Cliente c2 = new Cliente(2, "Camila Rodríguez", "2657-400303", "Zona Sur");
+        registrarCliente(c2);
+
+        Cliente c3 = new Cliente(3, "Joaquín Pérez", "2657-400404", "Barrio Oeste");
+        registrarCliente(c3);
+
+        Cliente c4 = new Cliente(4, "Lucía Fernández", "2657-400202", "Barrio Norte");
+        registrarCliente(c4);
 
 
+        Cliente c5 = new Cliente(5, "Valentin López", "2657-400505", "Zona Este");
+        registrarCliente(c5);
 
+        Vehiculo bicicleta = new Bicicleta("BICI-001");
+        Vehiculo moto = new Moto("AB123CD");
+        Vehiculo camioneta = new Camioneta("AC456EF");
 
+        Repartidor r1 = new Repartidor(101, "Diego Suarez", bicicleta);
+        registrarRepartidor(r1);
+
+        Repartidor r2 = new Repartidor(102, "Sofia Herrera", moto);
+        registrarRepartidor(r2);
+
+        Repartidor r3 = new Repartidor(103, "Tomas Acosta", camioneta);
+        registrarRepartidor(r3);
+
+        Pedido p1 = new PedidoNormal(1, c1, "Centro", 2, 3);
+        registrarPedido(p1);
+
+        Pedido p2 = new PedidoUrgente(2, c2, "Zona Sur", 5, 6);
+        registrarPedido(p2);
+
+        Pedido p3 = new PedidoFragil(3, c3, "Barrio Oeste", 3, 4);
+        registrarPedido(p3);
+
+        Pedido p4 = new PedidoNormal(4, c4, "Barrio Norte", 8, 2.5);
+        registrarPedido(p4);
+
+        Pedido p5 = new PedidoUrgente(5, c5, "Zona Este", 1.5, 7);
+        registrarPedido(p5);
+
+        Pedido p6 = new PedidoFragil(6, c1, "Centro", 4, 3.5);
+        registrarPedido(p6);
+
+        Pedido p7 = new PedidoNormal(7, c2, "Zona Sur", 25, 5);
+        registrarPedido(p7);
+
+        Pedido p8 = new PedidoNormal(8, c3, "Barrio Oeste", 120, 8);
+        registrarPedido(p8);
+
+        asignarPedido(1, 101);
+        asignarPedido(4, 101);
+
+        asignarPedido(2, 102);
+        asignarPedido(7, 102);
+
+        asignarPedido(3, 103);
+        asignarPedido(6, 103);
+        asignarPedido(8, 103);
+
+        cambiarEstado(1, EstadoPedido.EN_CAMINO);
+        cambiarEstado(1, EstadoPedido.ENTREGADO);
+
+        cambiarEstado(2, EstadoPedido.EN_CAMINO);
+        cambiarEstado(2, EstadoPedido.ENTREGADO);
+
+        cambiarEstado(3, EstadoPedido.EN_CAMINO);
+        
+    }
 }
