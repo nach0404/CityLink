@@ -1,16 +1,26 @@
 
 
-
 package app;
 
 import java.util.Scanner;
 import modelo.*;
 import excepciones.*;
 
+
+/**
+ * Clase principal de CityLink.
+ * Inicia la aplicación, carga los datos de prueba
+ * y gestiona el menú principal del sistema.
+ */
 public class Main {
 
     private static CityLink sistema = new CityLink();
 
+    /**
+     * Inicia la aplicación y ejecuta el menú principal.
+     *
+     * @param args argumentos recibidos desde la línea de comandos
+     */
     public static void main(String[] args) {
 
         Scanner teclado = new Scanner(System.in);
@@ -18,7 +28,7 @@ public class Main {
         try {
 
             // CARGA INICIAL
-            precargarDatos();
+            sistema.cargarDatosPrueba();
             System.out.println("Datos de prueba cargados correctamente.");
 
             boolean salir = false;
@@ -48,23 +58,23 @@ public class Main {
                         break;
 
                     case 2:
-                        System.out.println("Registrar repartidor");
+                        registrarRepartidor(teclado);
                         break;
 
                     case 3:
-                        System.out.println("Registrar pedido");
+                        registrarPedido(teclado);
                         break;
 
                     case 4:
-                        System.out.println("Asignar pedido");
+                        asignarPedido(teclado);
                         break;
 
                     case 5:
-                        System.out.println("Cambiar estado de pedido");
+                        cambiarEstadoPedido(teclado);
                         break;
 
                     case 6:
-                        System.out.println("Buscar cliente");
+                        buscarCliente(teclado);
                         break;
 
                     case 7:
@@ -72,7 +82,7 @@ public class Main {
                         break;
 
                     case 8:
-                        System.out.println("Consultar estado");
+                        consultarEstado(teclado);
                         break;
 
                     case 9:
@@ -102,70 +112,6 @@ public class Main {
             teclado.close();
             System.out.println("Sistema finalizado.");
         }
-    }
-
-    // PRECARGA DE DATOS
-    private static void precargarDatos() throws Exception {
-
-        // CLIENTES
-        Cliente c1 = new Cliente(1, "Ignacio Lucero", "2664000001", "Centro");
-        Cliente c2 = new Cliente(2, "Maria Rojo", "2664000002", "Norte");
-        Cliente c3 = new Cliente(3, "Gabriela Toledo", "2664000003", "Sur");
-        Cliente c4 = new Cliente(4, "Analia Baigorria", "2664000004", "Este");
-        Cliente c5 = new Cliente(5, "Antonella Oyola", "2664000005", "Oeste");
-
-        sistema.registrarCliente(c1);
-        sistema.registrarCliente(c2);
-        sistema.registrarCliente(c3);
-        sistema.registrarCliente(c4);
-        sistema.registrarCliente(c5);
-
-        // VEHICULOS
-        Vehiculo bicicleta = new Bicicleta("ABC123");
-        Vehiculo moto = new Moto("DEF456");
-        Vehiculo camioneta = new Camioneta("GHI789");
-
-        // REPARTIDORES
-        Repartidor r1 = new Repartidor(101, "Franco", bicicleta);
-        Repartidor r2 = new Repartidor(102, "Gian", moto);
-        Repartidor r3 = new Repartidor(103, "Sofia", camioneta);
-
-        sistema.registrarRepartidor(r1);
-        sistema.registrarRepartidor(r2);
-        sistema.registrarRepartidor(r3);
-
-        // PEDIDOS
-        Pedido p1 = new PedidoNormal(1001, c1, "Av. Central 100", 3, 10);
-        Pedido p2 = new PedidoNormal(1002, c2, "Calle Norte 200", 5, 15);
-        Pedido p3 = new PedidoNormal(1003, c3, "Calle Sur 300", 7, 8);
-
-        Pedido p4 = new PedidoUrgente(1004, c4, "Av. Este 400", 10, 12);
-        Pedido p5 = new PedidoUrgente(1005, c5, "Calle Oeste 500", 15, 20);
-        Pedido p6 = new PedidoUrgente(1006, c1, "Av. Central 600", 8, 18);
-
-        Pedido p7 = new PedidoFragil(1007, c2, "Calle Norte 700", 12, 10);
-        Pedido p8 = new PedidoFragil(1008, c3, "Calle Sur 800", 20, 25);
-
-        sistema.registrarPedido(p1);
-        sistema.registrarPedido(p2);
-        sistema.registrarPedido(p3);
-        sistema.registrarPedido(p4);
-        sistema.registrarPedido(p5);
-        sistema.registrarPedido(p6);
-        sistema.registrarPedido(p7);
-        sistema.registrarPedido(p8);
-
-        // ASIGNACIONES
-        sistema.asignarPedido(1001, 101);
-        sistema.asignarPedido(1002, 101);
-
-        sistema.asignarPedido(1003, 102);
-        sistema.asignarPedido(1004, 102);
-        sistema.asignarPedido(1007, 102);
-
-        sistema.asignarPedido(1005, 103);
-        sistema.asignarPedido(1006, 103);
-        sistema.asignarPedido(1008, 103);
     }
 
     // MOSTRAR MENU
@@ -217,6 +163,344 @@ public class Main {
         } catch (AlmacenamientoLlenoException | IllegalArgumentException e) {
 
             System.out.println("No se pudo registrar el cliente: " + e.getMessage());
+        }
+    }
+
+    // REGISTRAR REPARTIDOR
+    private static void registrarRepartidor(Scanner teclado) {
+
+        try {
+
+            System.out.println("\n--- REGISTRAR REPARTIDOR ---");
+
+            System.out.print("Ingrese el legajo: ");
+            int legajo = Integer.parseInt(teclado.nextLine());
+
+            System.out.print("Ingrese el nombre: ");
+            String nombre = teclado.nextLine();
+
+            System.out.println("\nSeleccione el vehiculo:");
+            System.out.println("1. Bicicleta");
+            System.out.println("2. Moto");
+            System.out.println("3. Camioneta");
+
+            System.out.print("Opcion: ");
+            int tipo = Integer.parseInt(teclado.nextLine());
+
+            System.out.print("Ingrese la patente: ");
+            String patente = teclado.nextLine();
+
+            Vehiculo vehiculo;
+
+            switch (tipo) {
+
+                case 1:
+                    vehiculo = new Bicicleta(patente);
+                    break;
+
+                case 2:
+                    vehiculo = new Moto(patente);
+                    break;
+
+                case 3:
+                    vehiculo = new Camioneta(patente);
+                    break;
+
+                default:
+                    System.out.println("Tipo de vehiculo incorrecto.");
+                    return;
+            }
+
+            Repartidor repartidor = new Repartidor(legajo, nombre, vehiculo);
+
+            sistema.registrarRepartidor(repartidor);
+
+            System.out.println("Repartidor registrado correctamente.");
+
+        } catch (NumberFormatException e) {
+
+            System.out.println("Error: debe ingresar un numero valido.");
+
+        } catch (AlmacenamientoLlenoException | IllegalArgumentException e) {
+
+            System.out.println("No se pudo registrar el repartidor: " + e.getMessage());
+        }
+    }
+
+    // REGISTRAR PEDIDO
+    private static void registrarPedido(Scanner teclado) {
+
+        try {
+
+            System.out.println("\n--- REGISTRAR PEDIDO ---");
+
+            System.out.println("Seleccione el tipo de pedido:");
+            System.out.println("1. Normal");
+            System.out.println("2. Urgente");
+            System.out.println("3. Fragil");
+
+            System.out.print("Opcion: ");
+            int tipo = Integer.parseInt(teclado.nextLine());
+
+            if (tipo < 1 || tipo > 3) {
+                System.out.println("Tipo de pedido incorrecto.");
+                return;
+            }
+
+            System.out.print("Ingrese el codigo del pedido: ");
+            int codigo = Integer.parseInt(teclado.nextLine());
+
+            System.out.print("Ingrese el codigo del cliente: ");
+            int codigoCliente = Integer.parseInt(teclado.nextLine());
+
+            // Buscamos al cliente registrado
+            Cliente cliente = sistema.buscarCliente(codigoCliente);
+
+            System.out.print("Ingrese el destino: ");
+            String destino = teclado.nextLine();
+
+            System.out.print("Ingrese el peso en kg: ");
+            double peso = Double.parseDouble(teclado.nextLine());
+
+            System.out.print("Ingrese la distancia en km: ");
+            double distancia = Double.parseDouble(teclado.nextLine());
+
+            Pedido pedido;
+
+            // Creamos el pedido según el tipo elegido
+            switch (tipo) {
+
+                case 1:
+                    pedido = new PedidoNormal(
+                            codigo, cliente, destino, peso, distancia);
+                    break;
+
+                case 2:
+                    pedido = new PedidoUrgente(
+                            codigo, cliente, destino, peso, distancia);
+                    break;
+
+                default:
+                    pedido = new PedidoFragil(
+                            codigo, cliente, destino, peso, distancia);
+                    break;
+            }
+
+            sistema.registrarPedido(pedido);
+
+            System.out.println("Pedido registrado correctamente.");
+
+        } catch (NumberFormatException e) {
+
+            System.out.println("Error: debe ingresar valores numericos validos.");
+
+        } catch (ClienteNoEncontradoException e) {
+
+            System.out.println("No se encontro el cliente: " + e.getMessage());
+
+        } catch (PedidoInvalidoException | AlmacenamientoLlenoException e) {
+
+            System.out.println("No se pudo registrar el pedido: " + e.getMessage());
+
+        } catch (IllegalArgumentException e) {
+
+            System.out.println("Datos incorrectos: " + e.getMessage());
+        }
+    }
+
+    // ASIGNAR PEDIDO A REPARTIDOR
+    private static void asignarPedido(Scanner teclado) {
+
+        try {
+
+            System.out.println("\n--- ASIGNAR PEDIDO ---");
+
+            System.out.print("Ingrese el codigo del pedido: ");
+            int codigoPedido = Integer.parseInt(teclado.nextLine());
+
+            System.out.print("Ingrese el legajo del repartidor: ");
+            int legajo = Integer.parseInt(teclado.nextLine());
+
+            sistema.asignarPedido(codigoPedido, legajo);
+
+            System.out.println("Pedido asignado correctamente.");
+
+        } catch (NumberFormatException e) {
+
+            System.out.println("Error: debe ingresar valores numericos.");
+
+        } catch (PedidoInvalidoException e) {
+
+            System.out.println("No se pudo encontrar el pedido: " + e.getMessage());
+
+        } catch (CapacidadExcedidaException e) {
+
+            System.out.println("El repartidor no puede transportar este pedido: "
+                    + e.getMessage());
+
+        } catch (AlmacenamientoLlenoException e) {
+
+            System.out.println("No se pudo asignar el pedido: " + e.getMessage());
+
+        } catch (IllegalArgumentException e) {
+
+            System.out.println("No se encontro el repartidor: " + e.getMessage());
+        }
+    }
+
+    // CAMBIAR ESTADO DE PEDIDO
+    private static void cambiarEstadoPedido(Scanner teclado) {
+
+        try {
+
+            System.out.println("\n--- CAMBIAR ESTADO DE PEDIDO ---");
+
+            System.out.print("Ingrese el codigo del pedido: ");
+            int codigoPedido = Integer.parseInt(teclado.nextLine());
+
+            System.out.println("\nSeleccione el nuevo estado:");
+            System.out.println("1. EN_CAMINO");
+            System.out.println("2. ENTREGADO");
+            System.out.println("3. CANCELADO");
+
+            System.out.print("Opcion: ");
+            int opcion = Integer.parseInt(teclado.nextLine());
+
+            EstadoPedido nuevoEstado;
+
+            switch (opcion) {
+
+                case 1:
+                    nuevoEstado = EstadoPedido.EN_CAMINO;
+                    break;
+
+                case 2:
+                    nuevoEstado = EstadoPedido.ENTREGADO;
+                    break;
+
+                case 3:
+                    nuevoEstado = EstadoPedido.CANCELADO;
+                    break;
+
+                default:
+                    System.out.println("Opcion de estado incorrecta.");
+                    return;
+            }
+
+            sistema.cambiarEstado(codigoPedido, nuevoEstado);
+
+            System.out.println("Estado del pedido actualizado correctamente.");
+
+        } catch (NumberFormatException e) {
+
+            System.out.println("Error: debe ingresar un numero valido.");
+
+        } catch (PedidoInvalidoException e) {
+
+            System.out.println("No se encontro el pedido: " + e.getMessage());
+
+        } catch (EstadoInvalidoException e) {
+
+            System.out.println("No se puede realizar el cambio de estado: "
+                    + e.getMessage());
+        }
+    }
+
+    // BUSCAR CLIENTE
+    private static void buscarCliente(Scanner teclado) {
+
+        try {
+
+            System.out.println("\n--- BUSCAR CLIENTE ---");
+            System.out.println("1. Buscar por codigo");
+            System.out.println("2. Buscar por nombre");
+
+            System.out.print("Seleccione una opcion: ");
+            int opcion = Integer.parseInt(teclado.nextLine());
+
+            Cliente cliente;
+
+            switch (opcion) {
+
+                case 1:
+                    System.out.print("Ingrese el codigo del cliente: ");
+                    int codigo = Integer.parseInt(teclado.nextLine());
+
+                    cliente = sistema.buscarCliente(codigo);
+                    break;
+
+                case 2:
+                    System.out.print("Ingrese el nombre del cliente: ");
+                    String nombre = teclado.nextLine();
+
+                    cliente = sistema.buscarCliente(nombre);
+                    break;
+
+                default:
+                    System.out.println("Opcion incorrecta.");
+                    return;
+            }
+
+            System.out.println("\nCliente encontrado:");
+            System.out.println("Codigo: " + cliente.getCodigo());
+            System.out.println("Nombre: " + cliente.getNombre());
+            System.out.println("Telefono: " + cliente.getTelefono());
+            System.out.println("Zona: " + cliente.getZona());
+
+        } catch (NumberFormatException e) {
+
+            System.out.println("Error: el codigo debe ser numerico.");
+
+        } catch (ClienteNoEncontradoException e) {
+
+            System.out.println("Cliente no encontrado: " + e.getMessage());
+        }
+    }
+
+    // CONSULTAR ESTADO
+    private static void consultarEstado(Scanner teclado) {
+
+        try {
+
+            System.out.println("\n--- CONSULTAR ESTADO ---");
+            System.out.println("1. Consultar estado de un pedido");
+            System.out.println("2. Consultar estado de un repartidor");
+
+            System.out.print("Seleccione una opcion: ");
+            int opcion = Integer.parseInt(teclado.nextLine());
+
+            switch (opcion) {
+
+                case 1:
+                    System.out.print("Ingrese el codigo del pedido: ");
+                    int codigoPedido = Integer.parseInt(teclado.nextLine());
+
+                    System.out.println(sistema.consultarEstadoPedido(codigoPedido));
+                    break;
+
+                case 2:
+                    System.out.print("Ingrese el legajo del repartidor: ");
+                    int legajo = Integer.parseInt(teclado.nextLine());
+
+                    System.out.println(sistema.consultarEstadoRepartidor(legajo));
+                    break;
+
+                default:
+                    System.out.println("Opcion incorrecta.");
+                    break;
+            }
+
+        } catch (NumberFormatException e) {
+
+            System.out.println("Error: debe ingresar un numero valido.");
+
+        } catch (PedidoInvalidoException e) {
+
+            System.out.println("No se encontro el pedido: " + e.getMessage());
+
+        } catch (IllegalArgumentException e) {
+
+            System.out.println("No se encontro el repartidor: " + e.getMessage());
         }
     }
 }
