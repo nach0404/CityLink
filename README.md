@@ -16,7 +16,7 @@ src/
 Desde la raiz del repositorio:
 
 ```bash
-javac -d bin src/modelo/*.java src/excepciones/*.java src/app/*.java
+javac -encoding UTF-8 -d bin src/modelo/*.java src/excepciones/*.java src/app/*.java
 java -cp bin app.Main
 ```
 
@@ -44,7 +44,7 @@ Requiere JDK
 ## Uso de IA
 **Claude**
 - Para que: Explicaciones de conceptos, revision del codigo.
-- Como se verifico: Probamos la clase con un main de prueba.
+- Como se verifico: se verificaron resultados, mediante compilacion y pruebas de funcionamiento.
 
 **ChatGPT**
 - Para qué: Asistencia para comprender el código, documentar clases y métodos mediante Javadoc y revisar la documentación del proyecto.
