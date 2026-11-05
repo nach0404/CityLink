@@ -108,12 +108,12 @@ public abstract class Vehiculo {
     }
 
     /**
-     * Establece la capacidad máxima de carga del vehículo.
-     *
-     * @param capacidadKg capacidad en kilogramos
-     * @throws IllegalArgumentException si la capacidad no es finita
-     * o es menor o igual a cero
-     */
+ * Establece la velocidad promedio del vehículo.
+ *
+ * @param velocidadKmH velocidad en kilómetros por hora
+ * @throws IllegalArgumentException si la velocidad no es finita
+ * o es menor o igual a cero
+ */
     public void setVelocidadKmH(double velocidadKmH) {
         if (!Double.isFinite(velocidadKmH) || velocidadKmH <= 0) {
             throw new IllegalArgumentException(
@@ -164,25 +164,31 @@ public abstract class Vehiculo {
 
 
     /**
-     * Calcula el tiempo de recorrido y suma los minutos adicionales
-     * correspondientes al tipo de vehículo.
-     *
-     * @param km distancia que se debe recorrer, en kilómetros
-     * @param minutosExtra minutos adicionales al tiempo de recorrido
-     * @return tiempo total estimado, en minutos
-     * @throws IllegalArgumentException si la distancia no es finita
-     * o es menor o igual a cero
-     */
-    protected double calcularTiempoConExtra(double km,
-                                            double minutosExtra) {
-        if (!Double.isFinite(km) || km <= 0) {
-            throw new IllegalArgumentException(
-                "La distancia debe ser mayor que cero."
-            );
-        }
-
-        return (km / velocidadKmH) * 60 + minutosExtra;
+ * Calcula el tiempo de recorrido y suma los minutos adicionales
+ * correspondientes al tipo de vehículo.
+ *
+ * @param km distancia que se debe recorrer, en kilómetros
+ * @param minutosExtra minutos adicionales al tiempo de recorrido
+ * @return tiempo total estimado, en minutos
+ * @throws IllegalArgumentException si la distancia no es finita
+ * o es menor o igual a cero, o si los minutos extra son negativos
+ */
+protected double calcularTiempoConExtra(double km,
+                                        double minutosExtra) {
+    if (!Double.isFinite(km) || km <= 0) {
+        throw new IllegalArgumentException(
+            "La distancia debe ser mayor que cero."
+        );
     }
+
+    if (!Double.isFinite(minutosExtra) || minutosExtra < 0) {
+        throw new IllegalArgumentException(
+            "Los minutos extra no pueden ser negativos."
+        );
+    }
+
+    return (km / velocidadKmH) * 60 + minutosExtra;
+}
 
     /**
      * Devuelve una representación textual de los datos del vehículo.

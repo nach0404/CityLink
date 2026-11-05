@@ -294,76 +294,78 @@ public class CityLink {
      */
     public void cargarDatosPrueba() throws AlmacenamientoLlenoException, CapacidadExcedidaException, ClienteNoEncontradoException, PedidoInvalidoException {
 
-        Cliente c1 = new Cliente(1, "Martin Gomez", "2657-400101", "Centro");
+
+        Cliente c1 = new Cliente(1, "Ignacio Lucero", "2657-400101", "Centro");
         registrarCliente(c1);
 
-        Cliente c2 = new Cliente(2, "Camila Rodríguez", "2657-400303", "Zona Sur");
+        Cliente c2 = new Cliente(2, "Maria Rojo", "2657-400303", "Zona Sur");
         registrarCliente(c2);
 
-        Cliente c3 = new Cliente(3, "Joaquín Pérez", "2657-400404", "Barrio Oeste");
+        Cliente c3 = new Cliente(3, "Gabriela Toledo", "2657-400404", "Barrio Oeste");
         registrarCliente(c3);
 
-        Cliente c4 = new Cliente(4, "Lucía Fernández", "2657-400202", "Barrio Norte");
+        Cliente c4 = new Cliente(4, "Analia Baigorria", "2657-400202", "Barrio Norte");
         registrarCliente(c4);
 
-
-        Cliente c5 = new Cliente(5, "Valentin López", "2657-400505", "Zona Este");
+        Cliente c5 = new Cliente(5, "Antonella Oyola", "2657-400505", "Zona Este");
         registrarCliente(c5);
 
         Vehiculo bicicleta = new Bicicleta("BICI-001");
         Vehiculo moto = new Moto("AB123CD");
         Vehiculo camioneta = new Camioneta("AC456EF");
 
-        Repartidor r1 = new Repartidor(101, "Diego Suarez", bicicleta);
+        Repartidor r1 = new Repartidor(101, "Franco", bicicleta);
         registrarRepartidor(r1);
 
-        Repartidor r2 = new Repartidor(102, "Sofia Herrera", moto);
+        Repartidor r2 = new Repartidor(102, "Gian", moto);
         registrarRepartidor(r2);
 
-        Repartidor r3 = new Repartidor(103, "Tomas Acosta", camioneta);
+        Repartidor r3 = new Repartidor(103, "Sofia", camioneta);
         registrarRepartidor(r3);
 
-        Pedido p1 = new PedidoNormal(1, c1, "Centro", 2, 3);
+        // PEDIDOS
+        Pedido p1 = new PedidoNormal(1001, c1, "Av. Central 100", 3, 10);
+        Pedido p2 = new PedidoNormal(1002, c2, "Calle Norte 200", 5, 15);
+        Pedido p3 = new PedidoNormal(1003, c3, "Calle Sur 300", 7, 8);
+
+        Pedido p4 = new PedidoUrgente(1004, c4, "Av. Este 400", 10, 12);
+        Pedido p5 = new PedidoUrgente(1005, c5, "Calle Oeste 500", 15, 20);
+        Pedido p6 = new PedidoUrgente(1006, c1, "Av. Central 600", 8, 18);
+
+        Pedido p7 = new PedidoFragil(1007, c2, "Calle Norte 700", 12, 10);
+        Pedido p8 = new PedidoFragil(1008, c3, "Calle Sur 800", 20, 25);
+
+        // REGISTRAR PEDIDOS
         registrarPedido(p1);
-
-        Pedido p2 = new PedidoUrgente(2, c2, "Zona Sur", 5, 6);
         registrarPedido(p2);
-
-        Pedido p3 = new PedidoFragil(3, c3, "Barrio Oeste", 3, 4);
         registrarPedido(p3);
-
-        Pedido p4 = new PedidoNormal(4, c4, "Barrio Norte", 8, 2.5);
         registrarPedido(p4);
-
-        Pedido p5 = new PedidoUrgente(5, c5, "Zona Este", 1.5, 7);
         registrarPedido(p5);
-
-        Pedido p6 = new PedidoFragil(6, c1, "Centro", 4, 3.5);
         registrarPedido(p6);
-
-        Pedido p7 = new PedidoNormal(7, c2, "Zona Sur", 25, 5);
         registrarPedido(p7);
-
-        Pedido p8 = new PedidoNormal(8, c3, "Barrio Oeste", 120, 8);
         registrarPedido(p8);
 
-        asignarPedido(1, 101);
-        asignarPedido(4, 101);
+        // ASIGNACIONES
+        asignarPedido(1001, 101);
+        asignarPedido(1002, 101);
 
-        asignarPedido(2, 102);
-        asignarPedido(7, 102);
+        asignarPedido(1003, 102);
+        asignarPedido(1004, 102);
+        asignarPedido(1007, 102);
 
-        asignarPedido(3, 103);
-        asignarPedido(6, 103);
-        asignarPedido(8, 103);
+        asignarPedido(1005, 103);
+        asignarPedido(1006, 103);
+        asignarPedido(1008, 103);
 
-        cambiarEstado(1, EstadoPedido.EN_CAMINO);
-        cambiarEstado(1, EstadoPedido.ENTREGADO);
+        cambiarEstado(1001, EstadoPedido.EN_CAMINO);
+        cambiarEstado(1001, EstadoPedido.ENTREGADO);
 
-        cambiarEstado(2, EstadoPedido.EN_CAMINO);
-        cambiarEstado(2, EstadoPedido.ENTREGADO);
+        cambiarEstado(1002, EstadoPedido.EN_CAMINO);
+        cambiarEstado(1002, EstadoPedido.ENTREGADO);
 
-        cambiarEstado(3, EstadoPedido.EN_CAMINO);
+        cambiarEstado(1003, EstadoPedido.EN_CAMINO);
+
         
     }
 }
+
