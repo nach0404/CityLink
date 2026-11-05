@@ -26,10 +26,11 @@ Requiere JDK
 ![Diagrama de clases](docs/diagrama-citylink.png)
 
 ## Valores de los vehiculos
-Vehículo	Capacidad máxima	Velocidad	Costo por km	Tiempo adicional
-Bicicleta	10 kg ||	15 km/h ||	$50	|| 0 min
-Moto	30 kg ||	40 km/h ||	$120 ||	5 min
-Camioneta	500 kg ||	30 km/h || $300 ||	10 min
+| Vehículo | Capacidad máxima | Velocidad | Costo por km | Tiempo adicional |
+| --- | --- | --- | --- | --- |
+| Bicicleta | 10 kg | 15 km/h | $50 | 0 min |
+| Moto | 30 kg | 40 km/h | $120 | 5 min |
+| Camioneta | 500 kg | 30 km/h | $300 | 10 min |
 
 ## Decisiones de diseño
 - Los setters de `Cliente` validan con `IllegalArgumentException`, porque
