@@ -38,6 +38,7 @@ Camioneta	500 kg ||	30 km/h || $300 ||	10 min
 - `Pedido` guarda el vehiculo pero no lo recibe en el constructor, porque el vehiculo no se conoce al crear el pedido, se le asigna cuando un repartidor toma el pedido. Por eso `calcularImporte()` lanza `IllegalStateException` si todavia no hay vehiculo.
 - La existencia del cliente la controla el gestor y no `Pedido`, porque es el que tiene la lista de clientes registrados.
 - Un pedido se crea con fecha y estado automaticamente(fecha actual y `PENDIENTE`) para que no se cree uno con un estado inicial incorrecto o una fecha falsa.
+- Si no se encuentra un pedido por su codigo se lanza `PedidoInvalidoException` ya que es checked y es de su dominio.
 
 ## Uso de IA
 **Claude**

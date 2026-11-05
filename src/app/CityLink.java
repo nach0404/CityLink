@@ -294,6 +294,7 @@ public class CityLink {
      */
     public void cargarDatosPrueba() throws AlmacenamientoLlenoException, CapacidadExcedidaException, ClienteNoEncontradoException, PedidoInvalidoException {
 
+
         Cliente c1 = new Cliente(1, "Ignacio Lucero", "2657-400101", "Centro");
         registrarCliente(c1);
 
@@ -305,7 +306,6 @@ public class CityLink {
 
         Cliente c4 = new Cliente(4, "Analia Baigorria", "2657-400202", "Barrio Norte");
         registrarCliente(c4);
-
 
         Cliente c5 = new Cliente(5, "Antonella Oyola", "2657-400505", "Zona Este");
         registrarCliente(c5);
@@ -335,7 +335,7 @@ public class CityLink {
         Pedido p7 = new PedidoFragil(1007, c2, "Calle Norte 700", 12, 10);
         Pedido p8 = new PedidoFragil(1008, c3, "Calle Sur 800", 20, 25);
 
-// REGISTRAR PEDIDOS
+        // REGISTRAR PEDIDOS
         registrarPedido(p1);
         registrarPedido(p2);
         registrarPedido(p3);
@@ -345,7 +345,7 @@ public class CityLink {
         registrarPedido(p7);
         registrarPedido(p8);
 
-// ASIGNACIONES
+        // ASIGNACIONES
         asignarPedido(1001, 101);
         asignarPedido(1002, 101);
 
@@ -364,6 +364,7 @@ public class CityLink {
         cambiarEstado(1002, EstadoPedido.ENTREGADO);
 
         cambiarEstado(1003, EstadoPedido.EN_CAMINO);
+
         
     }
 }
