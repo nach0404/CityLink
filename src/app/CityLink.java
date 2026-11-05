@@ -295,19 +295,19 @@ public class CityLink {
     public void cargarDatosPrueba() throws AlmacenamientoLlenoException, CapacidadExcedidaException, ClienteNoEncontradoException, PedidoInvalidoException {
 
 
-        Cliente c1 = new Cliente(1, "Ignacio Lucero", "2657-400101", "Centro");
+        Cliente c1 = new Cliente(1, "Ignacio Lucero", "2657400101", "Centro");
         registrarCliente(c1);
 
-        Cliente c2 = new Cliente(2, "Maria Rojo", "2657-400303", "Zona Sur");
+        Cliente c2 = new Cliente(2, "Maria Rojo", "2657400303", "Zona Sur");
         registrarCliente(c2);
 
-        Cliente c3 = new Cliente(3, "Gabriela Toledo", "2657-400404", "Barrio Oeste");
+        Cliente c3 = new Cliente(3, "Gabriela Toledo", "2657400404", "Barrio Oeste");
         registrarCliente(c3);
 
-        Cliente c4 = new Cliente(4, "Analia Baigorria", "2657-400202", "Barrio Norte");
+        Cliente c4 = new Cliente(4, "Analia Baigorria", "2657400202", "Barrio Norte");
         registrarCliente(c4);
 
-        Cliente c5 = new Cliente(5, "Antonella Oyola", "2657-400505", "Zona Este");
+        Cliente c5 = new Cliente(5, "Antonella Oyola", "2657400505", "Zona Este");
         registrarCliente(c5);
 
         Vehiculo bicicleta = new Bicicleta("BICI-001");

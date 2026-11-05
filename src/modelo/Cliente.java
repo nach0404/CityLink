@@ -70,7 +70,7 @@ public class Cliente {
      */
     public void setCodigo(int codigo) {
         if(codigo <= 0) {
-            throw new IllegalArgumentException("Error: el codigo de cliente no es valido");
+            throw new IllegalArgumentException("El codigo de cliente no es valido");
         }
 
         this.codigo = codigo;
@@ -84,14 +84,14 @@ public class Cliente {
      */
     public void setNombre(String nombre) {
         if(nombre == null || nombre.isBlank()) {
-            throw new IllegalArgumentException("Error: el nombre ingresado no es valido");
+            throw new IllegalArgumentException("El nombre ingresado no es valido");
         }
 
         for (int i = 0; i < nombre.length(); i++) {
             char caracter = nombre.charAt(i);
 
             if(!Character.isLetter(caracter) && caracter != ' ') {
-                throw new IllegalArgumentException("Error: el nombre solo puede contener letras y espacios");
+                throw new IllegalArgumentException("El nombre solo puede contener letras y espacios");
             }
         }
 
@@ -106,12 +106,12 @@ public class Cliente {
      */
     public void setTelefono(String telefono) {
         if(telefono == null || telefono.isBlank()) {
-            throw new IllegalArgumentException("Error: el telefono ingresado no es valido");
+            throw new IllegalArgumentException("El telefono ingresado no es valido");
         }
 
         for(int i = 0; i < telefono.length(); i++) {
             if(!Character.isDigit(telefono.charAt(i))) {
-                throw new IllegalArgumentException("Error: el telefono solo puede contener numeros");
+                throw new IllegalArgumentException("El telefono solo puede contener numeros");
             }
         }
 
@@ -125,7 +125,7 @@ public class Cliente {
      */
     public void setZona(String zona) {
         if(zona == null || zona.isBlank()) {
-            throw new IllegalArgumentException("Error: la zona ingresada no es valida");
+            throw new IllegalArgumentException("La zona ingresada no es valida");
         }
 
         this.zona = zona;
