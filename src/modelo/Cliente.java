@@ -80,23 +80,39 @@ public class Cliente {
      * Establece el nombre del cliente
      * @param nombre nombre del cliente
      * @throws IllegalArgumentException si el nombre es nulo o esta vacio
+     * o contiene caracteres que no sean letras o espacios
      */
     public void setNombre(String nombre) {
         if(nombre == null || nombre.isBlank()) {
             throw new IllegalArgumentException("Error: el nombre ingresado no es valido");
         }
 
-        this.nombre = nombre;
+        for (int i = 0; i < nombre.length(); i++) {
+            char caracter = nombre.charAt(i);
+
+            if(!Character.isLetter(caracter) && caracter != ' ') {
+                throw new IllegalArgumentException("Error: el nombre solo puede contener letras y espacios");
+            }
+        }
+
+        this.nombre = nombre.trim();
     }
 
     /**
      * Establece el telefono del cliente
      * @param telefono telefono del cliente
-     * @throws IllegalArgumentException si el telefono es nulo o esta vacio
+     * @throws IllegalArgumentException si el telefono es nulo, esta vacio
+     * o contiene caracteres que no sean numeros
      */
     public void setTelefono(String telefono) {
         if(telefono == null || telefono.isBlank()) {
             throw new IllegalArgumentException("Error: el telefono ingresado no es valido");
+        }
+
+        for(int i = 0; i < telefono.length(); i++) {
+            if(!Character.isDigit(telefono.charAt(i))) {
+                throw new IllegalArgumentException("Error: el telefono solo puede contener numeros");
+            }
         }
 
         this.telefono = telefono;

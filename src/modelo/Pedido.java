@@ -157,10 +157,11 @@ public abstract class Pedido implements Rastreable, Facturable {
     /**
      * Establece el peso total en kilogramos del pedido
      * @param pesoKg peso del pedido
-     * @throws PedidoInvalidoException si el peso ingresado es menor o igual a 0 o es NaN
+     * @throws PedidoInvalidoException si el peso ingresado no es un valor finito
+     * o es menor o igual a 0
      */
     public void setPesoKg(double pesoKg) throws PedidoInvalidoException {
-        if (pesoKg <= 0 || Double.isNaN(pesoKg)) {
+        if (Double.isFinite(pesoKg) || pesoKg <= 0) {
             throw new PedidoInvalidoException("Error: el peso ingresado no es valido");
         }
 
@@ -170,10 +171,11 @@ public abstract class Pedido implements Rastreable, Facturable {
     /**
      * Establece la distancia total en kilometros hasta el destino del pedido
      * @param distanciaKm distancia que recorre el pedido
-     * @throws PedidoInvalidoException si la distancia ingresada es menor o igual a 0 o es NaN
+     * @throws PedidoInvalidoException si la distancia ingresada no es un valor finito
+     * o es menor o igual a cero
      */
     public void setDistanciaKm(double distanciaKm) throws PedidoInvalidoException {
-        if (distanciaKm <= 0 || Double.isNaN(distanciaKm)) {
+        if (Double.isFinite(distanciaKm) || distanciaKm <= 0) {
             throw new PedidoInvalidoException("Error: la distancia ingresada no es valida");
         }
 
