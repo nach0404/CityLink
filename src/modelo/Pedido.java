@@ -122,7 +122,7 @@ public abstract class Pedido implements Rastreable, Facturable {
      */
     public void setCodigo(int codigo) throws PedidoInvalidoException {
         if(codigo <= 0) {
-            throw new PedidoInvalidoException("Error: el codigo del pedido no es valido");
+            throw new PedidoInvalidoException("El codigo del pedido no es valido");
         }
 
         this.codigo = codigo;
@@ -135,7 +135,7 @@ public abstract class Pedido implements Rastreable, Facturable {
      */
     public void setCliente(Cliente cliente) throws PedidoInvalidoException {
         if(cliente == null) {
-            throw new PedidoInvalidoException("Error: el cliente ingresado no existe o no se encontro");
+            throw new PedidoInvalidoException("El cliente ingresado no existe o no se encontro");
         }
 
         this.cliente = cliente;
@@ -148,7 +148,7 @@ public abstract class Pedido implements Rastreable, Facturable {
      */
     public void setDestino(String destino)  throws PedidoInvalidoException {
         if (destino == null || destino.isBlank()) {
-            throw new PedidoInvalidoException("Error: el destino ingresado no es valido");
+            throw new PedidoInvalidoException("El destino ingresado no es valido");
         }
 
         this.destino = destino;
@@ -157,11 +157,12 @@ public abstract class Pedido implements Rastreable, Facturable {
     /**
      * Establece el peso total en kilogramos del pedido
      * @param pesoKg peso del pedido
-     * @throws PedidoInvalidoException si el peso ingresado es menor o igual a 0 o es NaN
+     * @throws PedidoInvalidoException si el peso ingresado no es un valor finito
+     * o es menor o igual a 0
      */
     public void setPesoKg(double pesoKg) throws PedidoInvalidoException {
-        if (pesoKg <= 0 || Double.isNaN(pesoKg)) {
-            throw new PedidoInvalidoException("Error: el peso ingresado no es valido");
+        if (!Double.isFinite(pesoKg) || pesoKg <= 0) {
+            throw new PedidoInvalidoException("El peso ingresado no es valido");
         }
 
         this.pesoKg = pesoKg;
@@ -170,11 +171,12 @@ public abstract class Pedido implements Rastreable, Facturable {
     /**
      * Establece la distancia total en kilometros hasta el destino del pedido
      * @param distanciaKm distancia que recorre el pedido
-     * @throws PedidoInvalidoException si la distancia ingresada es menor o igual a 0 o es NaN
+     * @throws PedidoInvalidoException si la distancia ingresada no es un valor finito
+     * o es menor o igual a cero
      */
     public void setDistanciaKm(double distanciaKm) throws PedidoInvalidoException {
-        if (distanciaKm <= 0 || Double.isNaN(distanciaKm)) {
-            throw new PedidoInvalidoException("Error: la distancia ingresada no es valida");
+        if (!Double.isFinite(distanciaKm) || distanciaKm <= 0) {
+            throw new PedidoInvalidoException("La distancia ingresada no es valida");
         }
 
         this.distanciaKm = distanciaKm;
@@ -187,7 +189,7 @@ public abstract class Pedido implements Rastreable, Facturable {
      */
     public void setVehiculo(Vehiculo v) throws PedidoInvalidoException {
         if(v == null) {
-            throw new PedidoInvalidoException("Error: no se asigno un vehiculo al pedido");
+            throw new PedidoInvalidoException("No se asigno un vehiculo al pedido");
         }
 
         this.vehiculo = v;

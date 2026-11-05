@@ -115,13 +115,22 @@ public class Repartidor implements Rastreable, Facturable {
      * Establece el nombre del repartidor.
      *
      * @param nombre nuevo nombre del repartidor
-     * @throws IllegalArgumentException si el nombre es nulo o está vacío
+     * @throws IllegalArgumentException si el nombre es nulo, está vacío
+     * o contiene carcteres que no sean letras o espacios
      */
     public void setNombre(String nombre) {
         if (nombre == null || nombre.isBlank()) {
             throw new IllegalArgumentException(
                 "El nombre no puede estar vacío."
             );
+        }
+
+        for(int i = 0; i < nombre.length(); i++) {
+            char caracter = nombre.charAt(i);
+
+            if(!Character.isLetter(caracter) && caracter != ' ') {
+                throw new IllegalArgumentException("El nombre solo puede contener letras y espacios.");
+            }
         }
 
         this.nombre = nombre.trim();

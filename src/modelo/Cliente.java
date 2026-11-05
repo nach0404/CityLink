@@ -70,7 +70,7 @@ public class Cliente {
      */
     public void setCodigo(int codigo) {
         if(codigo <= 0) {
-            throw new IllegalArgumentException("Error: el codigo de cliente no es valido");
+            throw new IllegalArgumentException("El codigo de cliente no es valido");
         }
 
         this.codigo = codigo;
@@ -80,23 +80,39 @@ public class Cliente {
      * Establece el nombre del cliente
      * @param nombre nombre del cliente
      * @throws IllegalArgumentException si el nombre es nulo o esta vacio
+     * o contiene caracteres que no sean letras o espacios
      */
     public void setNombre(String nombre) {
         if(nombre == null || nombre.isBlank()) {
-            throw new IllegalArgumentException("Error: el nombre ingresado no es valido");
+            throw new IllegalArgumentException("El nombre ingresado no es valido");
         }
 
-        this.nombre = nombre;
+        for (int i = 0; i < nombre.length(); i++) {
+            char caracter = nombre.charAt(i);
+
+            if(!Character.isLetter(caracter) && caracter != ' ') {
+                throw new IllegalArgumentException("El nombre solo puede contener letras y espacios");
+            }
+        }
+
+        this.nombre = nombre.trim();
     }
 
     /**
      * Establece el telefono del cliente
      * @param telefono telefono del cliente
-     * @throws IllegalArgumentException si el telefono es nulo o esta vacio
+     * @throws IllegalArgumentException si el telefono es nulo, esta vacio
+     * o contiene caracteres que no sean numeros
      */
     public void setTelefono(String telefono) {
         if(telefono == null || telefono.isBlank()) {
-            throw new IllegalArgumentException("Error: el telefono ingresado no es valido");
+            throw new IllegalArgumentException("El telefono ingresado no es valido");
+        }
+
+        for(int i = 0; i < telefono.length(); i++) {
+            if(!Character.isDigit(telefono.charAt(i))) {
+                throw new IllegalArgumentException("El telefono solo puede contener numeros");
+            }
         }
 
         this.telefono = telefono;
@@ -109,7 +125,7 @@ public class Cliente {
      */
     public void setZona(String zona) {
         if(zona == null || zona.isBlank()) {
-            throw new IllegalArgumentException("Error: la zona ingresada no es valida");
+            throw new IllegalArgumentException("La zona ingresada no es valida");
         }
 
         this.zona = zona;
