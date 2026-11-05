@@ -23,7 +23,7 @@ java -cp bin app.Main
 Requiere JDK
 
 ## Diagrama de clases
-en construccion...
+![Diagrama de clases](docs/diagrama-citylink.png)
 
 ## Valores de los vehiculos
 Vehículo	Capacidad máxima	Velocidad	Costo por km	Tiempo adicional
