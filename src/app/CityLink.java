@@ -3,17 +3,16 @@ import modelo.*;
 
 
 import excepciones.*;
+import java.util.TreeMap;
 
 /**
  * Gestor CityLink
- * contiene los arreglos de clientes, pedidos, repartidores
+ * contiene las estructuras dinamicas. Los clientes en arbol, pedidos, repartidores
  * y operaciones del sistema.
  */
 public class CityLink {
 
-    private static final int MAX_CLIENTES = 50;
-    private Cliente[] clientes;
-    private int cantClientes;
+    private TreeMap<Integer, Cliente> clientes;
 
     private static final int MAX_PEDIDOS = 100;
     private Pedido[] pedidos;
@@ -24,13 +23,12 @@ public class CityLink {
     private int cantRepartidores;
 
     /**
-     * Crea un gestor vacio inicializando los arreglos con sus capacidades ya definidas, y contadores en 0.
+     * Crea un gestor vacio inicializando las estructuras dinamicas
      */
     public CityLink() {
-        clientes = new Cliente[MAX_CLIENTES];
+        clientes = new TreeMap<>();
         pedidos = new Pedido[MAX_PEDIDOS];
         repartidores = new Repartidor[MAX_REPARTIDORES];
-        cantClientes = 0;
         cantPedidos = 0;
         cantRepartidores = 0;
     }
@@ -38,18 +36,13 @@ public class CityLink {
     /**
      * Registra un nuevo cliente
      * @param c cliente
-     * @throws AlmacenamientoLlenoException si la cantidad de clientes excede la capacidad establecida.
      * @throws IllegalArgumentException si el codigo del cliente a registrar ya existe.
      */
-    public void registrarCliente(Cliente c) throws AlmacenamientoLlenoException {
-        if (cantClientes >= MAX_CLIENTES) throw new AlmacenamientoLlenoException("Capacidad de clientes excedida!");
+    public void registrarCliente(Cliente c) {
 
-        for(int i = 0; i < cantClientes; i++) {
-            if (clientes[i].getCodigo() == c.getCodigo()) throw new IllegalArgumentException("Codigo de cliente repetido!");
-        }
+        if (clientes.containsKey(c.getCodigo())) throw new IllegalArgumentException("Codigo de cliente repetido");
 
-        clientes[cantClientes] = c;
-        cantClientes++;
+        clientes.put(c.getCodigo(), c);
     }
 
     /**
@@ -59,12 +52,11 @@ public class CityLink {
      * @throws ClienteNoEncontradoException si no se encontro ningun cliente con ese codigo
      */
     public Cliente buscarCliente(int codigo) throws ClienteNoEncontradoException {
-        for(int i = 0; i < cantClientes; i++) {
-            if(clientes[i].getCodigo() == codigo) {
-                return clientes[i];
-            }
-        }
-        throw new ClienteNoEncontradoException("No se encontro al cliente con el codigo: " + codigo);
+
+        Cliente c = clientes.get(codigo);
+        if(c == null) throw new ClienteNoEncontradoException("No se encontro al cliente con el codigo: " + codigo);
+
+        return c;
     }
 
     /**
@@ -74,10 +66,8 @@ public class CityLink {
      * @throws ClienteNoEncontradoException si no se encontro ningun cliente con ese nombre
      */
     public Cliente buscarCliente(String nombre) throws ClienteNoEncontradoException {
-        for(int i = 0; i < cantClientes; i++) {
-            if (clientes[i].getNombre().equalsIgnoreCase(nombre)) {
-                return clientes[i];
-            }
+        for (Cliente c : clientes.values()) {
+            if(c.getNombre().equalsIgnoreCase(nombre)) return c;
         }
         throw new ClienteNoEncontradoException("No se encontro al cliente " + nombre);
     }
@@ -88,23 +78,25 @@ public class CityLink {
      * @throws ClienteNoEncontradoException si el codigo del cliente no existe
      */
     public void eliminarCliente(int codigo) throws ClienteNoEncontradoException {
-        int posicion = -1;
 
-        for(int i = 0; i < cantClientes; i++) {
-            if(clientes[i].getCodigo() == codigo) {
-                posicion = i;
-            }
+        if(clientes.remove(codigo) == null) throw new ClienteNoEncontradoException("No se encontro al cliente con el codigo: " + codigo);
+    }
+
+    /**
+     * Lista todos los clientes registrados
+     * @return texto con informacion de todos los clientes
+     */
+    public String listarClientes() {
+
+        if(clientes.isEmpty()) return "No hay clientes registrados";
+
+        String acumulador = "";
+
+        for (Cliente c : clientes.values()) {
+            acumulador += c.toString() + "\n";
         }
 
-        if (posicion == -1) throw new ClienteNoEncontradoException("No se encontro al cliente con el codigo: " + codigo);
-
-        for(int i = posicion; i < cantClientes - 1; i++) {
-            clientes[i] = clientes[i + 1];
-        }
-
-        clientes[cantClientes - 1] = null;
-        cantClientes--;
-
+        return acumulador;
     }
 
     /**

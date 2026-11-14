@@ -160,7 +160,7 @@ public class Main {
 
             System.out.println("Error: el codigo debe ser un numero.");
 
-        } catch (AlmacenamientoLlenoException | IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
 
             System.out.println("No se pudo registrar el cliente: " + e.getMessage());
         }
