@@ -4,33 +4,29 @@ import modelo.*;
 
 import excepciones.*;
 import java.util.TreeMap;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Gestor CityLink
- * contiene las estructuras dinamicas. Los clientes en arbol, pedidos, repartidores
+ * contiene las estructuras dinamicas. Los clientes en arbol, pedidos y repartidores en ArrayList,
  * y operaciones del sistema.
  */
 public class CityLink {
 
     private TreeMap<Integer, Cliente> clientes;
 
-    private static final int MAX_PEDIDOS = 100;
-    private Pedido[] pedidos;
-    private int cantPedidos;
+    private List<Pedido> pedidos;
 
-    private static final int MAX_REPARTIDORES = 10;
-    private Repartidor[] repartidores;
-    private int cantRepartidores;
+    private List<Repartidor> repartidores;
 
     /**
      * Crea un gestor vacio inicializando las estructuras dinamicas
      */
     public CityLink() {
         clientes = new TreeMap<>();
-        pedidos = new Pedido[MAX_PEDIDOS];
-        repartidores = new Repartidor[MAX_REPARTIDORES];
-        cantPedidos = 0;
-        cantRepartidores = 0;
+        pedidos = new ArrayList<>();
+        repartidores = new ArrayList<>();
     }
 
     /**
@@ -40,7 +36,7 @@ public class CityLink {
      */
     public void registrarCliente(Cliente c) {
 
-        if (clientes.containsKey(c.getCodigo())) throw new IllegalArgumentException("Codigo de cliente repetido");
+        if (clientes.containsKey(c.getCodigo())) throw new IllegalArgumentException("Codigo de cliente repetido!");
 
         clientes.put(c.getCodigo(), c);
     }
@@ -101,39 +97,33 @@ public class CityLink {
 
     /**
      * Registra un nuevo repartidor
-     * @param r repartidor 
-     * @throws AlmacenamientoLlenoException si la cantidad de repartidores excede a la capacidad
+     * @param r repartidor
      * @throws IllegalArgumentException si el legajo del repartidor ya existe
      */
-    public void registrarRepartidor(Repartidor r) throws AlmacenamientoLlenoException {
-        if (cantRepartidores >= MAX_REPARTIDORES) throw new AlmacenamientoLlenoException("Capacidad de repartidores excedida!");
+    public void registrarRepartidor(Repartidor r) {
 
-        for(int i = 0; i < cantRepartidores; i++) {
-            if (repartidores[i].getLegajo() == r.getLegajo()) throw new IllegalArgumentException("Legajo de repartidor repetido!");
+        for (Repartidor repartidor : repartidores) {
+            if(r.getLegajo() == repartidor.getLegajo()) throw new IllegalArgumentException("Legajo de repartidor repetido!");
         }
 
-        repartidores[cantRepartidores] = r;
-        cantRepartidores++;
+        repartidores.add(r);
     }
 
     /**
      * Registra un pedido
      * @param p pedido
-     * @throws AlmacenamientoLlenoException si la cantidad de pedidos excede a la capacidad
      * @throws PedidoInvalidoException si el codigo del pedido esta repetido
      * @throws ClienteNoEncontradoException si no se encontro al cliente del pedido
      */
-    public void registrarPedido(Pedido p) throws AlmacenamientoLlenoException, PedidoInvalidoException, ClienteNoEncontradoException {
-        if (cantPedidos >= MAX_PEDIDOS) throw new AlmacenamientoLlenoException("Capacidad de pedidos excedida");
+    public void registrarPedido(Pedido p) throws PedidoInvalidoException, ClienteNoEncontradoException {
 
-        for (int i = 0; i < cantPedidos; i++) {
-            if (pedidos[i].getCodigo() == p.getCodigo()) throw new PedidoInvalidoException("Codigo de pedido repetido!");
+        for (Pedido pedido : pedidos) {
+            if (pedido.getCodigo() == p.getCodigo()) throw new PedidoInvalidoException("Codigo de pedido repetido!");
         }
 
         buscarCliente(p.getCliente().getCodigo());
 
-        pedidos[cantPedidos] = p;
-        cantPedidos++;
+        pedidos.add(p);
     }
 
     /**
@@ -143,9 +133,9 @@ public class CityLink {
      * @throws PedidoInvalidoException si no se encuentra un pedido con ese codigo
      */
     public Pedido buscarPedido(int codigo) throws PedidoInvalidoException {
-        for(int i = 0; i < cantPedidos; i++) {
-            if(pedidos[i].getCodigo() == codigo) {
-                return pedidos[i]; 
+        for(Pedido p : pedidos) {
+            if(p.getCodigo() == codigo) {
+                return p; 
             }
         }
 
@@ -159,10 +149,8 @@ public class CityLink {
      * @throws IllegalArgumentException si no se encuentra un repartidor con ese legajo
      */
     public Repartidor buscarRepartidor(int legajo) {
-        for(int i = 0; i < cantRepartidores; i++) {
-            if(repartidores[i].getLegajo() == legajo) {
-                return repartidores[i];
-            }
+        for (Repartidor repartidor : repartidores) {
+            if (legajo == repartidor.getLegajo()) return repartidor;
         }
 
         throw new IllegalArgumentException("No se encontro un repartidor con el legajo: " + legajo);
@@ -203,20 +191,20 @@ public class CityLink {
     public String listarPedidos() {
         String acumulador = "";
 
-        for(int i = 0; i < cantPedidos; i++) {
+        for(Pedido p : pedidos) {
 
-            Vehiculo v = pedidos[i].getVehiculo();
+            Vehiculo v = p.getVehiculo();
 
             if(v == null) {
-                acumulador += "| Codigo: " + pedidos[i].getCodigo() + 
-                             " - Tipo: " + pedidos[i].getClass().getSimpleName() + 
+                acumulador += "| Codigo: " + p.getCodigo() + 
+                             " - Tipo: " + p.getClass().getSimpleName() + 
                              " - Sin vehiculo asignado" + "\n";
             } else {
-                double costo = pedidos[i].calcularCosto(v);
-                double tiempo = v.calcularTiempoEntrega(pedidos[i].getDistanciaKm());
+                double costo = p.calcularCosto(v);
+                double tiempo = v.calcularTiempoEntrega(p.getDistanciaKm());
                 
-                acumulador += "| Codigo: " + pedidos[i].getCodigo() + 
-                             " - Tipo: " + pedidos[i].getClass().getSimpleName() + 
+                acumulador += "| Codigo: " + p.getCodigo() + 
+                             " - Tipo: " + p.getClass().getSimpleName() + 
                              " - Costo: " + String.format("%.2f", costo) + " - Tiempo: " + tiempo + " min" + "\n";
 
             }
@@ -254,9 +242,9 @@ public class CityLink {
      */
     public double calcularImporteTotalPedidos() {
         double totalPedidos = 0;
-        for(int i = 0; i < cantPedidos; i++) {
-            if(pedidos[i].getVehiculo() != null) {
-                totalPedidos += pedidos[i].calcularImporte();
+        for(Pedido p : pedidos) {
+            if(p.getVehiculo() != null) {
+                totalPedidos += p.calcularImporte();
             }
         }
 
@@ -270,15 +258,15 @@ public class CityLink {
     public String listarComisiones() {
         String acumulador = "";
 
-        for(int i = 0; i < cantRepartidores; i++) {
-            acumulador += "| Nombre: " + repartidores[i].getNombre() + " - Comisiones: " + repartidores[i].calcularImporte() + "\n";
+        for(Repartidor repartidor : repartidores) {
+            acumulador += "| Nombre: " + repartidor.getNombre() + " - Comisiones: " + String.format("%.2f", repartidor.calcularImporte()) + "\n";
         }
 
         return acumulador;
     }
 
     /**
-     * Datos de prueba, carga clientes, repartidores y pedidos. Se de llamar una sola vez.
+     * Datos de prueba, carga clientes, repartidores y pedidos. Se debe llamar una sola vez.
      * @throws AlmacenamientoLlenoException si la cantidad excede a la capacidad
      * @throws CapacidadExcedidaException si el vehiculo no puede transportar el pedido
      * @throws ClienteNoEncontradoException si el cliente de algun pedido no esta registrado

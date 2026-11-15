@@ -221,7 +221,7 @@ public class Main {
 
             System.out.println("Error: debe ingresar un numero valido.");
 
-        } catch (AlmacenamientoLlenoException | IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
 
             System.out.println("No se pudo registrar el repartidor: " + e.getMessage());
         }
@@ -298,7 +298,7 @@ public class Main {
 
             System.out.println("No se encontro el cliente: " + e.getMessage());
 
-        } catch (PedidoInvalidoException | AlmacenamientoLlenoException e) {
+        } catch (PedidoInvalidoException e) {
 
             System.out.println("No se pudo registrar el pedido: " + e.getMessage());
 
