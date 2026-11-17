@@ -243,4 +243,12 @@ public abstract class Pedido implements Rastreable, Facturable {
 
         return calcularCosto(vehiculo);
     }
+
+    /**
+     * Devuelve falso por defecto
+     * @return falso
+     */
+    public boolean esUrgente() {
+        return false;
+    }
 }

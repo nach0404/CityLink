@@ -40,4 +40,13 @@ public class PedidoUrgente extends Pedido {
         double subtotal = COSTO_BASE + getDistanciaKm() * v.getCostoPorKm();
         return subtotal * (1 + RECARGO);
     }
+
+    /**
+     * Devuelve verdadero porque el pedido es urgente
+     * @return verdadero
+     */
+    @Override
+    public boolean esUrgente() {
+        return true;
+    }
 }

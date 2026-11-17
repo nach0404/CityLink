@@ -6,6 +6,8 @@ import excepciones.*;
 import java.util.TreeMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 /**
  * Gestor CityLink
@@ -20,6 +22,10 @@ public class CityLink {
 
     private List<Repartidor> repartidores;
 
+    private Queue<Pedido> urgentes;
+
+    private Queue<Pedido> normales; 
+
     /**
      * Crea un gestor vacio inicializando las estructuras dinamicas
      */
@@ -27,6 +33,8 @@ public class CityLink {
         clientes = new TreeMap<>();
         pedidos = new ArrayList<>();
         repartidores = new ArrayList<>();
+        urgentes = new ArrayDeque<>();
+        normales = new ArrayDeque<>();
     }
 
     /**
@@ -110,7 +118,7 @@ public class CityLink {
     }
 
     /**
-     * Registra un pedido
+     * Registra un pedido en pedidos urgentes o normales
      * @param p pedido
      * @throws PedidoInvalidoException si el codigo del pedido esta repetido
      * @throws ClienteNoEncontradoException si no se encontro al cliente del pedido
@@ -122,6 +130,12 @@ public class CityLink {
         }
 
         buscarCliente(p.getCliente().getCodigo());
+
+        if(p.esUrgente()) {
+            urgentes.offer(p);
+        } else {
+            normales.offer(p);
+        }
 
         pedidos.add(p);
     }
@@ -346,6 +360,25 @@ public class CityLink {
         cambiarEstado(1003, EstadoPedido.EN_CAMINO);
 
         
+    }
+
+    /**
+     * Atiende al siguiente pedido pendiente: primero los urgentes y luego los normales, ambos por orden de llegada
+     * @return pedido urgente o normal
+     * @throws SinPedidosPendientesException si no hay pedidos pendientes
+     */
+    public Pedido atenderSiguiente() throws SinPedidosPendientesException {
+        Pedido siguiente = urgentes.poll();
+
+        if(siguiente == null) {
+            siguiente = normales.poll();
+        }
+
+        if(siguiente == null) {
+            throw new SinPedidosPendientesException("No hay pedidos pendientes...");
+        }
+
+        return siguiente;
     }
 }
 
