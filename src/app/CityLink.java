@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.Deque;
 
 /**
  * Gestor CityLink
@@ -26,6 +27,8 @@ public class CityLink {
 
     private Queue<Pedido> normales; 
 
+    private Deque<Operacion> historial;
+
     /**
      * Crea un gestor vacio inicializando las estructuras dinamicas
      */
@@ -35,6 +38,7 @@ public class CityLink {
         repartidores = new ArrayList<>();
         urgentes = new ArrayDeque<>();
         normales = new ArrayDeque<>();
+        historial = new ArrayDeque<>();
     }
 
     /**
@@ -138,6 +142,8 @@ public class CityLink {
         }
 
         pedidos.add(p);
+
+        historial.push(new OperacionAlta(p));
     }
 
     /**
@@ -363,6 +369,7 @@ public class CityLink {
 
         cambiarEstado(1003, EstadoPedido.EN_CAMINO);
 
+        historial.clear();
         
     }
 
@@ -383,6 +390,35 @@ public class CityLink {
         }
 
         return siguiente;
+    }
+
+    /**
+     * Elimina un pedido de la lista pedidos, y de su cola segun el tipo(urgentes o normales)
+     * @param p pedido a quitar
+    */
+    public void quitarPedido(Pedido p) {
+
+        pedidos.remove(p);
+
+        if(p.esUrgente()) {
+            urgentes.remove(p);
+        } else {
+            normales.remove(p);
+        }
+    }
+
+    /**
+     * Deshace la ultima operacion registrada en el historial
+     * @throws NadaParaDeshacerException si no hay operaciones recientes
+     * @return texto del ultimo pedido que se elimino
+    */
+    public String deshacerUltima() throws NadaParaDeshacerException {
+
+        if(historial.isEmpty()) throw new NadaParaDeshacerException("No hay operaciones recientes");
+
+        Operacion ultima = historial.pop();
+
+        return ultima.deshacer(this);
     }
 }
 
