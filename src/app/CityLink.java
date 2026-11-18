@@ -183,6 +183,12 @@ public class CityLink {
         Repartidor repartidor = buscarRepartidor(legajo);
 
         repartidor.asignarPedido(pedido);
+
+        if (pedido.esUrgente()) {
+            urgentes.remove(pedido);
+        } else {
+            normales.remove(pedido);
+        }
     }
 
     /**
@@ -345,11 +351,9 @@ public class CityLink {
 
         asignarPedido(1003, 102);
         asignarPedido(1004, 102);
-        asignarPedido(1007, 102);
 
         asignarPedido(1005, 103);
         asignarPedido(1006, 103);
-        asignarPedido(1008, 103);
 
         cambiarEstado(1001, EstadoPedido.EN_CAMINO);
         cambiarEstado(1001, EstadoPedido.ENTREGADO);
