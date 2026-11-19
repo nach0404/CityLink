@@ -1,6 +1,8 @@
 
 package modelo;
 
+import java.util.ArrayList;
+
 import excepciones.AlmacenamientoLlenoException;
 import excepciones.CapacidadExcedidaException;
 import excepciones.EstadoInvalidoException;
@@ -8,100 +10,81 @@ import excepciones.PedidoInvalidoException;
 
 /**
  * Representa a un repartidor de CityLink.
- * Administra su vehículo y los pedidos que tiene asignados.
- * También permite consultar el estado de sus pedidos y calcular
- * la comisión correspondiente a las entregas realizadas.
+ * Administra su vehículo, los pedidos asignados y el historial
+ * de entregas realizadas.
  */
 public class Repartidor implements Rastreable, Facturable {
 
     private int legajo;
     private String nombre;
     private Vehiculo vehiculo;
-    private Pedido[] pedidos;
-    private int cantidadPedidos;
+    private ArrayList<Pedido> pedidos;
+    private ArrayList<Pedido> historial;
 
     private static final int MAX_PEDIDOS = 100;
     private static final double PORCENTAJE_COMISION = 0.10;
 
     /**
      * Construye un repartidor con su legajo, nombre y vehículo.
-     * Inicializa el arreglo donde se almacenarán sus pedidos.
+     * Inicializa las listas de pedidos e historial.
      *
-     * @param legajo número identificatorio del repartidor; debe ser mayor que cero
-     * @param nombre nombre del repartidor; no puede estar vacío
-     * @param vehiculo vehículo asignado al repartidor; no puede ser nulo
-     * @throws IllegalArgumentException si el legajo, el nombre o el vehículo no son válidos
+     * @param legajo número identificatorio del repartidor
+     * @param nombre nombre del repartidor
+     * @param vehiculo vehículo asignado
+     * @throws IllegalArgumentException si algún dato no es válido
      */
     public Repartidor(int legajo, String nombre, Vehiculo vehiculo) {
         setLegajo(legajo);
         setNombre(nombre);
         setVehiculo(vehiculo);
 
-        pedidos = new Pedido[MAX_PEDIDOS];
-        cantidadPedidos = 0;
+        pedidos = new ArrayList<>();
+        historial = new ArrayList<>();
     }
 
     // Getters
 
-    /**
-     * Obtiene el legajo del repartidor.
-     *
-     * @return número identificatorio del repartidor
-     */
     public int getLegajo() {
         return legajo;
     }
 
-    /**
-     * Obtiene el nombre del repartidor.
-     *
-     * @return nombre del repartidor
-     */
     public String getNombre() {
         return nombre;
     }
 
-    /**
-     * Obtiene el vehículo asignado al repartidor.
-     *
-     * @return vehículo asignado
-     */
     public Vehiculo getVehiculo() {
         return vehiculo;
     }
 
     /**
-     * Obtiene la cantidad de pedidos asignados al repartidor.
+     * Obtiene la cantidad de pedidos asignados.
      *
-     * @return cantidad actual de pedidos asignados
+     * @return cantidad de pedidos
      */
     public int getCantidadPedidos() {
-        return cantidadPedidos;
+        return pedidos.size();
     }
 
     /**
-     * Devuelve una copia del arreglo de pedidos asignados.
+     * Devuelve una copia de los pedidos asignados.
      *
-     * @return arreglo con los pedidos asignados hasta el momento
+     * @return lista de pedidos asignados
      */
-    public Pedido[] getPedidos() {
-        Pedido[] copia = new Pedido[cantidadPedidos];
+    public ArrayList<Pedido> getPedidos() {
+        return new ArrayList<>(pedidos);
+    }
 
-        for (int i = 0; i < cantidadPedidos; i++) {
-            copia[i] = pedidos[i];
-        }
-
-        return copia;
+    /**
+     * Devuelve una copia del historial de entregas.
+     *
+     * @return lista de pedidos entregados
+     */
+    public ArrayList<Pedido> getHistorial() {
+        return new ArrayList<>(historial);
     }
 
     // Setters con validación
 
-    /**
-     * Establece el legajo del repartidor.
-     *
-     * @param legajo nuevo número identificatorio
-     * @throws IllegalArgumentException si el legajo es menor o igual que cero
-     */
     public void setLegajo(int legajo) {
         if (legajo <= 0) {
             throw new IllegalArgumentException(
@@ -112,13 +95,6 @@ public class Repartidor implements Rastreable, Facturable {
         this.legajo = legajo;
     }
 
-    /**
-     * Establece el nombre del repartidor.
-     *
-     * @param nombre nuevo nombre del repartidor
-     * @throws IllegalArgumentException si el nombre es nulo, está vacío
-     * o contiene carcteres que no sean letras o espacios
-     */
     public void setNombre(String nombre) {
         if (nombre == null || nombre.isBlank()) {
             throw new IllegalArgumentException(
@@ -126,23 +102,19 @@ public class Repartidor implements Rastreable, Facturable {
             );
         }
 
-        for(int i = 0; i < nombre.length(); i++) {
+        for (int i = 0; i < nombre.length(); i++) {
             char caracter = nombre.charAt(i);
 
-            if(!Character.isLetter(caracter) && caracter != ' ') {
-                throw new IllegalArgumentException("El nombre solo puede contener letras y espacios.");
+            if (!Character.isLetter(caracter) && caracter != ' ') {
+                throw new IllegalArgumentException(
+                    "El nombre solo puede contener letras y espacios."
+                );
             }
         }
 
         this.nombre = nombre.trim();
     }
 
-    /**
-     * Asigna un vehículo al repartidor.
-     *
-     * @param vehiculo vehículo que se desea asignar
-     * @throws IllegalArgumentException si el vehículo es nulo
-     */
     public void setVehiculo(Vehiculo vehiculo) {
         if (vehiculo == null) {
             throw new IllegalArgumentException(
@@ -154,13 +126,12 @@ public class Repartidor implements Rastreable, Facturable {
     }
 
     /**
-     * Asigna un pedido utilizando el vehículo actual del repartidor.
+     * Asigna un pedido utilizando el vehículo actual.
      *
      * @param pedido pedido que se desea asignar
-     * @throws CapacidadExcedidaException si el vehículo no puede transportar el pedido
-     * @throws AlmacenamientoLlenoException si se alcanzó el máximo de pedidos
-     * @throws PedidoInvalidoException si el pedido no cumple alguna validación del sistema
-     * @throws IllegalArgumentException si el pedido es nulo o ya está asignado
+     * @throws CapacidadExcedidaException si el vehículo no puede transportarlo
+     * @throws AlmacenamientoLlenoException si se alcanzó el límite de pedidos
+     * @throws PedidoInvalidoException si el pedido no es válido
      */
     public void asignarPedido(Pedido pedido)
             throws CapacidadExcedidaException,
@@ -170,19 +141,14 @@ public class Repartidor implements Rastreable, Facturable {
         asignarPedido(pedido, this.vehiculo);
     }
 
-    
     /**
      * Asigna un pedido utilizando el vehículo indicado.
-     * Verifica que los datos sean válidos, que exista espacio disponible
-     * y que el vehículo pueda transportar el pedido.
      *
      * @param pedido pedido que se desea asignar
-     * @param vehiculoAsignado vehículo que se utilizará para transportar el pedido
-     * @throws CapacidadExcedidaException si el vehículo no puede transportar el pedido
-     * @throws AlmacenamientoLlenoException si se alcanzó el máximo de pedidos
-     * @throws PedidoInvalidoException si el pedido no cumple alguna validación del sistema
-     * @throws IllegalArgumentException si el pedido o el vehículo son nulos,
-     * o si el pedido ya está asignado
+     * @param vehiculoAsignado vehículo que transportará el pedido
+     * @throws CapacidadExcedidaException si el vehículo no puede transportarlo
+     * @throws AlmacenamientoLlenoException si se alcanzó el límite de pedidos
+     * @throws PedidoInvalidoException si el pedido no es válido
      */
     public void asignarPedido(Pedido pedido, Vehiculo vehiculoAsignado)
             throws CapacidadExcedidaException,
@@ -201,45 +167,43 @@ public class Repartidor implements Rastreable, Facturable {
             );
         }
 
-        if (cantidadPedidos >= MAX_PEDIDOS) {
+        if (pedidos.size() >= MAX_PEDIDOS) {
             throw new AlmacenamientoLlenoException(
                 "El repartidor alcanzó el máximo de pedidos."
             );
         }
 
-        // No permitir asignar dos veces el mismo pedido.
-        for (int i = 0; i < cantidadPedidos; i++) {
-            if (pedidos[i].getCodigo() == pedido.getCodigo()) {
+        // Evitar asignaciones duplicadas.
+        for (Pedido p : pedidos) {
+            if (p.getCodigo() == pedido.getCodigo()) {
                 throw new IllegalArgumentException(
                     "El pedido ya está asignado a este repartidor."
                 );
             }
         }
 
-        // Verificar capacidad y restricciones del vehículo.
+        // Verificar que el vehículo pueda transportar el pedido.
         if (!vehiculoAsignado.puedeTransportar(pedido)) {
             throw new CapacidadExcedidaException(
                 "El vehículo no puede transportar este pedido."
             );
         }
 
-        // Guardar el vehículo utilizado para calcular el costo.
         pedido.setVehiculo(vehiculoAsignado);
-
-        pedidos[cantidadPedidos] = pedido;
-        cantidadPedidos++;
+        pedidos.add(pedido);
     }
 
     /**
-     * Registra la entrega de un pedido previamente asignado.
-     * El pedido debe encontrarse en un estado que permita marcarlo
-     * como entregado.
+     * Registra la entrega de un pedido asignado.
+     * Verifica que esté en camino, cambia su estado a ENTREGADO
+     * y lo agrega al historial.
      *
-     * @param pedido pedido cuya entrega se desea registrar
-     * @throws IllegalArgumentException si el pedido es nulo o no está asignado
-     * @throws EstadoInvalidoException si el cambio al estado ENTREGADO no está permitido
+     * @param pedido pedido cuya entrega se registra
+     * @throws IllegalArgumentException si el pedido es nulo,
+     * no está asignado, no está en camino o ya fue entregado
      */
     public void registrarEntrega(Pedido pedido) {
+
         if (pedido == null) {
             throw new IllegalArgumentException(
                 "El pedido no puede ser nulo."
@@ -248,8 +212,8 @@ public class Repartidor implements Rastreable, Facturable {
 
         boolean asignado = false;
 
-        for (int i = 0; i < cantidadPedidos; i++) {
-            if (pedidos[i].getCodigo() == pedido.getCodigo()) {
+        for (Pedido p : pedidos) {
+            if (p.getCodigo() == pedido.getCodigo()) {
                 asignado = true;
                 break;
             }
@@ -261,24 +225,42 @@ public class Repartidor implements Rastreable, Facturable {
             );
         }
 
+        // Evitar registrar dos veces el mismo pedido.
+        for (Pedido p : historial) {
+            if (p.getCodigo() == pedido.getCodigo()) {
+                throw new IllegalArgumentException(
+                    "La entrega de este pedido ya fue registrada."
+                );
+            }
+        }
+
+        // Solo se pueden entregar pedidos que estén en camino.
+        if (pedido.getEstado() != EstadoPedido.EN_CAMINO) {
+            throw new IllegalArgumentException(
+                "El pedido debe estar en camino para registrar su entrega."
+            );
+        }
+
         pedido.cambiarEstado(EstadoPedido.ENTREGADO);
+
+        historial.add(pedido);
     }
 
     /**
-     * Obtiene un resumen de los estados de los pedidos del repartidor.
-     * Cuenta los pedidos pendientes, en camino y entregados.
+     * Obtiene un resumen de los estados de los pedidos.
      *
-     * @return texto con el nombre del repartidor y la cantidad de pedidos
-     * en cada estado
+     * @return cantidad de pedidos pendientes, en camino y entregados
      */
     @Override
     public String obtenerEstadoActual() {
+
         int pendientes = 0;
         int enCamino = 0;
         int entregados = 0;
 
-        for (int i = 0; i < cantidadPedidos; i++) {
-            EstadoPedido estado = pedidos[i].getEstado();
+        for (Pedido pedido : pedidos) {
+
+            EstadoPedido estado = pedido.getEstado();
 
             if (estado == EstadoPedido.PENDIENTE) {
                 pendientes++;
@@ -296,58 +278,90 @@ public class Repartidor implements Rastreable, Facturable {
     }
 
     /**
-     * Calcula la comisión del repartidor como el 10 % del importe
-     * total de los pedidos que se encuentran en estado ENTREGADO.
+     * Calcula la comisión del repartidor como el 10 %
+     * del importe total de las entregas registradas.
      *
-     * @return importe de la comisión correspondiente a las entregas realizadas
+     * @return importe de la comisión
      */
     @Override
     public double calcularImporte() {
+
         double totalEntregado = 0;
 
-        for (int i = 0; i < cantidadPedidos; i++) {
-            if (pedidos[i].getEstado() == EstadoPedido.ENTREGADO) {
-                totalEntregado += pedidos[i].calcularImporte();
-            }
+        for (Pedido pedido : historial) {
+            totalEntregado += pedido.calcularImporte();
         }
 
         return totalEntregado * PORCENTAJE_COMISION;
     }
 
     /**
-     * Devuelve una representación textual del repartidor,
-     * incluyendo su legajo, nombre, patente del vehículo y cantidad de pedidos.
+     * Devuelve una representación textual del repartidor.
      *
      * @return descripción del repartidor
      */
     @Override
     public String toString() {
+
         return "Legajo: " + legajo
                 + ", nombre: " + nombre
                 + ", vehículo: " + vehiculo.getPatente()
-                + ", pedidos asignados: " + cantidadPedidos;
+                + ", pedidos asignados: " + pedidos.size()
+                + ", entregas realizadas: " + historial.size();
     }
 
-        /**
-     * Quita un pedido de los asignados al repartidor, desplazando los siguientes.
-     * Se usa para deshacer una asignacion.
+    /**
+     * Quita un pedido de los asignados al repartidor.
+     * Se utiliza para deshacer una asignación.
      *
-     * @param pedido pedido a quitar
-     * @throws IllegalArgumentException si el pedido no esta asignado a este repartidor
+     * @param pedido pedido que se desea quitar
+     * @throws IllegalArgumentException si el pedido es nulo
+     * o no está asignado a este repartidor
      */
     public void quitarPedido(Pedido pedido) {
-        for (int i = 0; i < cantidadPedidos; i++) {
-            if (pedidos[i].getCodigo() == pedido.getCodigo()) {
-                for (int j = i; j < cantidadPedidos - 1; j++) {
-                    pedidos[j] = pedidos[j + 1];
-                }
 
-                pedidos[cantidadPedidos - 1] = null;
-                cantidadPedidos--;
+        if (pedido == null) {
+            throw new IllegalArgumentException(
+                "El pedido no puede ser nulo."
+            );
+        }
+
+        for (int i = 0; i < pedidos.size(); i++) {
+
+            if (pedidos.get(i).getCodigo() == pedido.getCodigo()) {
+                pedidos.remove(i);
                 return;
             }
         }
 
-        throw new IllegalArgumentException("El pedido no esta asignado a este repartidor.");
+        throw new IllegalArgumentException(
+            "El pedido no está asignado a este repartidor."
+        );
     }
+
+        /**
+     * Quita una entrega del historial.
+     * Se utiliza cuando se deshace el cambio de estado
+     * de un pedido entregado.
+     *
+     * @param pedido pedido cuya entrega se desea quitar
+     */
+    public void quitarEntrega(Pedido pedido) {
+
+        if (pedido == null) {
+            throw new IllegalArgumentException(
+                "El pedido no puede ser nulo."
+            );
+        }
+
+        for (int i = 0; i < historial.size(); i++) {
+
+            if (historial.get(i).getCodigo() == pedido.getCodigo()) {
+                historial.remove(i);
+                return;
+            }
+        }
+    }
+
+       
 }

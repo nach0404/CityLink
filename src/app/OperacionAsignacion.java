@@ -4,9 +4,8 @@ import modelo.Pedido;
 import modelo.Repartidor;
 
 /**
- * Operacion de asignacion de un pedido a un repartidor. Guarda ambos para poder
- * revertirla: el pedido deja al repartidor, pierde el vehiculo y vuelve a la
- * cola de pendientes.
+ * Representa una operación de asignación de un pedido a un repartidor.
+ * Guarda ambos objetos para poder deshacer la asignación.
  */
 public class OperacionAsignacion implements Operacion {
 
@@ -14,9 +13,10 @@ public class OperacionAsignacion implements Operacion {
     private Repartidor repartidor;
 
     /**
-     * Crea la operacion de asignacion
-     * @param pedido pedido que se asigno
-     * @param repartidor repartidor al que se asigno
+     * Construye una operación de asignación.
+     *
+     * @param pedido pedido que fue asignado
+     * @param repartidor repartidor al que se asignó el pedido
      */
     public OperacionAsignacion(Pedido pedido, Repartidor repartidor) {
         this.pedido = pedido;
@@ -24,8 +24,11 @@ public class OperacionAsignacion implements Operacion {
     }
 
     /**
-     * Quita el pedido del repartidor, le saca el vehiculo y lo devuelve a la cola de pendientes
-     * @return texto que describe lo que se deshizo
+     * Deshace la asignación, quita el pedido del repartidor,
+     * elimina su vehículo y lo devuelve a la cola de pendientes.
+     *
+     * @param gestor sistema CityLink que administra las colas
+     * @return mensaje que describe la operación deshecha
      */
     @Override
     public String deshacer(CityLink gestor) {
@@ -33,7 +36,9 @@ public class OperacionAsignacion implements Operacion {
         pedido.quitarVehiculo();
         gestor.encolarPendiente(pedido);
 
-        return "Se deshizo la asignacion del pedido " + pedido.getCodigo()
-                + " al repartidor " + repartidor.getNombre() + ", vuelve a pendientes";
+        return "Se deshizo la asignación del pedido "
+                + pedido.getCodigo()
+                + " al repartidor " + repartidor.getNombre()
+                + ". El pedido vuelve a pendientes.";
     }
 }

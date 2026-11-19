@@ -24,11 +24,21 @@ public class OperacionCambioEstado implements Operacion {
      * Deshace el estado de un pedido al estado anterior
      * @return texto con el codigo del pedido y estado anterior
      */
-    @Override 
-    public String deshacer(CityLink gestor) {
-        pedido.restaurarEstado(anterior);
-        return "Se deshizo el cambio de estado del pedido " + pedido.getCodigo() + ", vuelve a " + anterior;
-        
+     @Override
+public String deshacer(CityLink gestor) {
+
+    if (pedido.getEstado() == EstadoPedido.ENTREGADO
+            && anterior == EstadoPedido.EN_CAMINO) {
+
+        gestor.quitarEntregaRepartidor(pedido);
     }
-    
+
+    pedido.restaurarEstado(anterior);
+
+    return "Se deshizo el cambio de estado del pedido "
+            + pedido.getCodigo()
+            + ", vuelve a "
+            + anterior;
+}
+        
 }

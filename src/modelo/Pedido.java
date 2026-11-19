@@ -261,7 +261,8 @@ public abstract class Pedido implements Rastreable, Facturable {
     }
 
     /**
-     * Quita el vehiculo asignado al pedido. Se usa para deshacer una asignacion
+     * Quita el vehículo asignado al pedido.
+     * Se utiliza para deshacer una asignación.
      */
     public void quitarVehiculo() {
         this.vehiculo = null;
