@@ -251,4 +251,12 @@ public abstract class Pedido implements Rastreable, Facturable {
     public boolean esUrgente() {
         return false;
     }
+
+    /**
+     * Restaura un estado anterior sin validar la transicion. se usa para deshacer
+     * @param anterior estado a restaurar
+     */
+    public void restaurarEstado(EstadoPedido anterior) {
+        this.estado = anterior;
+    }
 }
