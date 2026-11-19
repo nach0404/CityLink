@@ -16,8 +16,8 @@ src/
 Desde la raiz del repositorio:
 
 ```bash
-javac -encoding UTF-8 -d bin src/modelo/*.java src/excepciones/*.java src/app/*.java
-java -cp bin app.Main
+javac -encoding UTF-8 -d out modelo/*.java excepciones/*.java algoritmos/*.java app/*.java
+java -cp out app.Main
 ```
 
 Requiere JDK

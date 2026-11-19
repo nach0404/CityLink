@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import excepciones.AlmacenamientoLlenoException;
 import excepciones.CapacidadExcedidaException;
+import excepciones.EstadoInvalidoException;
 import excepciones.PedidoInvalidoException;
 
 /**
@@ -361,4 +362,6 @@ public class Repartidor implements Rastreable, Facturable {
             }
         }
     }
+
+       
 }

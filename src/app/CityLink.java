@@ -5,8 +5,12 @@ import modelo.*;
 import excepciones.*;
 
 import java.util.TreeMap;
+
+import algoritmos.Ordenamiento;
+
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Deque;
@@ -153,7 +157,7 @@ public class CityLink {
         repartidores.add(r);
     }
 
-    /**
+        /**
      * Registra un pedido y lo incorpora a la cola correspondiente.
      *
      * @param p pedido a registrar
@@ -175,11 +179,7 @@ public class CityLink {
 
         buscarCliente(p.getCliente().getCodigo());
 
-        if (p.esUrgente()) {
-            urgentes.offer(p);
-        } else {
-            normales.offer(p);
-        }
+        encolarPendiente(p);
 
         pedidos.add(p);
 
@@ -326,11 +326,20 @@ public class CityLink {
      *
      * @return información de los pedidos, incluyendo costo y tiempo cuando tienen vehículo
      */
-    public String listarPedidos() {
+        public String listarPedidos() {
+        return formatearPedidos(pedidos);
+    }
 
+    /**
+     * Arma el texto de una lista de pedidos, uno por línea.
+     *
+     * @param lista pedidos a mostrar
+     * @return texto con el código, tipo, costo y tiempo de cada pedido
+     */
+    private String formatearPedidos(List<Pedido> lista) {
         String acumulador = "";
 
-        for (Pedido p : pedidos) {
+        for (Pedido p : lista) {
 
             Vehiculo v = p.getVehiculo();
 
@@ -420,7 +429,7 @@ public class CityLink {
         return acumulador;
     }
 
-    /**
+        /**
      * Carga los datos de prueba del sistema.
      * Este método debe ejecutarse una sola vez al iniciar la aplicación.
      *
@@ -461,7 +470,6 @@ public class CityLink {
         registrarRepartidor(r1);
         registrarRepartidor(r2);
         registrarRepartidor(r3);
-
         // Pedidos
         Pedido p1 = new PedidoNormal(1001, c1, "Av. Central 100", 3, 10);
         Pedido p2 = new PedidoNormal(1002, c2, "Calle Norte 200", 5, 15);
@@ -502,31 +510,8 @@ public class CityLink {
         historial.clear();
     }
 
-    /**
-     * Atiende al siguiente pedido pendiente.
-     * Prioriza la cola de urgentes y luego la de normales.
-     *
-     * @return siguiente pedido
-     * @throws SinPedidosPendientesException si no hay pedidos pendientes
-     */
-    public Pedido atenderSiguiente() throws SinPedidosPendientesException {
 
-        Pedido siguiente = urgentes.poll();
-
-        if (siguiente == null) {
-            siguiente = normales.poll();
-        }
-
-        if (siguiente == null) {
-            throw new SinPedidosPendientesException(
-                "No hay pedidos pendientes..."
-            );
-        }
-
-        return siguiente;
-    }
-
-    /**
+     /**
      * Elimina un pedido de la lista y de su cola correspondiente.
      *
      * @param p pedido a quitar
@@ -546,25 +531,9 @@ public class CityLink {
         }
     }
 
-    /**
-     * Devuelve un pedido a la cola de pendientes que le corresponde.
-     *
-     * @param p pedido que vuelve a estar pendiente
-     */
-    public void encolarPendiente(Pedido p) {
 
-        if (p == null) {
-            throw new IllegalArgumentException("El pedido no puede ser nulo.");
-        }
 
-        if (p.esUrgente()) {
-            urgentes.offer(p);
-        } else {
-            normales.offer(p);
-        }
-    }
-
-    /**
+        /**
      * Deshace la última operación registrada.
      *
      * @return descripción de la operación deshecha
@@ -581,5 +550,77 @@ public class CityLink {
         Operacion ultima = historial.pop();
 
         return ultima.deshacer(this);
+    }
+/**
+ * Devuelve un pedido a la cola de pendientes que le corresponde.
+ *
+ * @param p pedido que vuelve a estar pendiente
+ */
+public void encolarPendiente(Pedido p) {
+
+    if (p == null) {
+        throw new IllegalArgumentException("El pedido no puede ser nulo.");
+    }
+
+    if (p.esUrgente()) {
+        urgentes.offer(p);
+    } else {
+        normales.offer(p);
+    }
+}
+
+    /**
+     * Atiende el siguiente pedido pendiente (urgentes primero), lo asigna al primer
+     * repartidor que pueda llevarlo y lo pone EN_CAMINO. Si ningun repartidor puede,
+     * el pedido sigue pendiente en su cola.
+     * @return texto con el pedido atendido y el repartidor asignado
+     * @throws SinPedidosPendientesException si no hay pedidos pendientes
+     * @throws CapacidadExcedidaException si ningun repartidor puede transportar el pedido
+     * @throws PedidoInvalidoException si el pedido no cumple alguna validacion
+     */
+    public String atenderYAsignar() throws SinPedidosPendientesException, CapacidadExcedidaException, PedidoInvalidoException {
+        Pedido siguiente = urgentes.peek();
+
+        if(siguiente == null) {
+            siguiente = normales.peek();
+        }
+
+        if(siguiente == null) {
+            throw new SinPedidosPendientesException("No hay pedidos pendientes...");
+        }
+
+        for (Repartidor r : repartidores) {
+            try {
+                asignarPedido(siguiente.getCodigo(), r.getLegajo());
+            } catch (CapacidadExcedidaException | AlmacenamientoLlenoException e) {
+                continue;
+            }
+
+            cambiarEstado(siguiente.getCodigo(), EstadoPedido.EN_CAMINO);
+
+            return "Pedido " + siguiente.getCodigo() + " asignado a " + r.getNombre() + " y en camino";
+        }
+
+        throw new CapacidadExcedidaException("Ningun repartidor puede transportar el pedido " + siguiente.getCodigo());
+    }
+
+    /**
+     * Lista los pedidos ordenados con el criterio y el algoritmo elegidos
+     * @param criterio criterio de orden (ver algoritmos.Criterios)
+     * @param usarMergeSort true para mergesort, false para insercion
+     * @return texto con los pedidos ordenados, uno por linea
+     */
+    public String listarPedidosOrdenados(Comparator<Pedido> criterio, boolean usarMergeSort) {
+        if(pedidos.isEmpty()) return "No hay pedidos registrados";
+
+        List<Pedido> ordenados;
+
+        if(usarMergeSort) {
+            ordenados = Ordenamiento.mergeSort(pedidos, criterio);
+        } else {
+            ordenados = Ordenamiento.insercion(pedidos, criterio);
+        }
+
+        return formatearPedidos(ordenados);
     }
 }

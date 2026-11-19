@@ -1,4 +1,3 @@
-
 package app;
 
 import modelo.Pedido;
@@ -39,9 +38,7 @@ public class OperacionAsignacion implements Operacion {
 
         return "Se deshizo la asignación del pedido "
                 + pedido.getCodigo()
-                + " al repartidor "
-                + repartidor.getNombre()
+                + " al repartidor " + repartidor.getNombre()
                 + ". El pedido vuelve a pendientes.";
     }
 }
-
