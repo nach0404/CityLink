@@ -4,8 +4,12 @@ import modelo.*;
 
 import excepciones.*;
 import java.util.TreeMap;
+
+import algoritmos.Ordenamiento;
+
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Deque;
@@ -135,11 +139,7 @@ public class CityLink {
 
         buscarCliente(p.getCliente().getCodigo());
 
-        if(p.esUrgente()) {
-            urgentes.offer(p);
-        } else {
-            normales.offer(p);
-        }
+        encolarPendiente(p);
 
         pedidos.add(p);
 
@@ -195,6 +195,8 @@ public class CityLink {
         } else {
             normales.remove(pedido);
         }
+
+        historial.push(new OperacionAsignacion(pedido, repartidor));
     }
 
     /**
@@ -210,7 +212,6 @@ public class CityLink {
         pedido.cambiarEstado(nuevo);
 
         historial.push(new OperacionCambioEstado(pedido, anterior));
-
     }
 
     /**
@@ -219,9 +220,18 @@ public class CityLink {
      * si un pedido no tiene vehiculo asignado, solo muestra codigo y tipo.
      */
     public String listarPedidos() {
+        return formatearPedidos(pedidos);
+    }
+
+    /**
+     * Arma el texto de una lista de pedidos, uno por linea
+     * @param lista pedidos a mostrar
+     * @return texto con el codigo, tipo, costo y tiempo de cada pedido
+     */
+    private String formatearPedidos(List<Pedido> lista) {
         String acumulador = "";
 
-        for(Pedido p : pedidos) {
+        for(Pedido p : lista) {
 
             Vehiculo v = p.getVehiculo();
 
@@ -378,25 +388,6 @@ public class CityLink {
     }
 
     /**
-     * Atiende al siguiente pedido pendiente: primero los urgentes y luego los normales, ambos por orden de llegada
-     * @return pedido urgente o normal
-     * @throws SinPedidosPendientesException si no hay pedidos pendientes
-     */
-    public Pedido atenderSiguiente() throws SinPedidosPendientesException {
-        Pedido siguiente = urgentes.poll();
-
-        if(siguiente == null) {
-            siguiente = normales.poll();
-        }
-
-        if(siguiente == null) {
-            throw new SinPedidosPendientesException("No hay pedidos pendientes...");
-        }
-
-        return siguiente;
-    }
-
-    /**
      * Elimina un pedido de la lista pedidos, y de su cola segun el tipo(urgentes o normales)
      * @param p pedido a quitar
     */
@@ -414,7 +405,7 @@ public class CityLink {
     /**
      * Deshace la ultima operacion registrada en el historial
      * @throws NadaParaDeshacerException si no hay operaciones recientes
-     * @return texto del ultimo pedido que se elimino
+     * @return texto que describe la operación que se deshizo
     */
     public String deshacerUltima() throws NadaParaDeshacerException {
 
@@ -435,6 +426,61 @@ public class CityLink {
         } else {
             normales.offer(p);
         }
+    }
+
+    /**
+     * Atiende el siguiente pedido pendiente (urgentes primero), lo asigna al primer
+     * repartidor que pueda llevarlo y lo pone EN_CAMINO. Si ningun repartidor puede,
+     * el pedido sigue pendiente en su cola.
+     * @return texto con el pedido atendido y el repartidor asignado
+     * @throws SinPedidosPendientesException si no hay pedidos pendientes
+     * @throws CapacidadExcedidaException si ningun repartidor puede transportar el pedido
+     * @throws PedidoInvalidoException si el pedido no cumple alguna validacion
+     */
+    public String atenderYAsignar() throws SinPedidosPendientesException, CapacidadExcedidaException, PedidoInvalidoException {
+        Pedido siguiente = urgentes.peek();
+
+        if(siguiente == null) {
+            siguiente = normales.peek();
+        }
+
+        if(siguiente == null) {
+            throw new SinPedidosPendientesException("No hay pedidos pendientes...");
+        }
+
+        for (Repartidor r : repartidores) {
+            try {
+                asignarPedido(siguiente.getCodigo(), r.getLegajo());
+            } catch (CapacidadExcedidaException | AlmacenamientoLlenoException e) {
+                continue;
+            }
+
+            cambiarEstado(siguiente.getCodigo(), EstadoPedido.EN_CAMINO);
+
+            return "Pedido " + siguiente.getCodigo() + " asignado a " + r.getNombre() + " y en camino";
+        }
+
+        throw new CapacidadExcedidaException("Ningun repartidor puede transportar el pedido " + siguiente.getCodigo());
+    }
+
+    /**
+     * Lista los pedidos ordenados con el criterio y el algoritmo elegidos
+     * @param criterio criterio de orden (ver algoritmos.Criterios)
+     * @param usarMergeSort true para mergesort, false para insercion
+     * @return texto con los pedidos ordenados, uno por linea
+     */
+    public String listarPedidosOrdenados(Comparator<Pedido> criterio, boolean usarMergeSort) {
+        if(pedidos.isEmpty()) return "No hay pedidos registrados";
+
+        List<Pedido> ordenados;
+
+        if(usarMergeSort) {
+            ordenados = Ordenamiento.mergeSort(pedidos, criterio);
+        } else {
+            ordenados = Ordenamiento.insercion(pedidos, criterio);
+        }
+
+        return formatearPedidos(ordenados);
     }
 }
 
