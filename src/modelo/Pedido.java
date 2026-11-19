@@ -259,4 +259,11 @@ public abstract class Pedido implements Rastreable, Facturable {
     public void restaurarEstado(EstadoPedido anterior) {
         this.estado = anterior;
     }
+
+    /**
+     * Quita el vehiculo asignado al pedido. Se usa para deshacer una asignacion
+     */
+    public void quitarVehiculo() {
+        this.vehiculo = null;
+    }
 }

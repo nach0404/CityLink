@@ -3,6 +3,7 @@ package modelo;
 
 import excepciones.AlmacenamientoLlenoException;
 import excepciones.CapacidadExcedidaException;
+import excepciones.EstadoInvalidoException;
 import excepciones.PedidoInvalidoException;
 
 /**
@@ -325,5 +326,28 @@ public class Repartidor implements Rastreable, Facturable {
                 + ", nombre: " + nombre
                 + ", vehículo: " + vehiculo.getPatente()
                 + ", pedidos asignados: " + cantidadPedidos;
+    }
+
+        /**
+     * Quita un pedido de los asignados al repartidor, desplazando los siguientes.
+     * Se usa para deshacer una asignacion.
+     *
+     * @param pedido pedido a quitar
+     * @throws IllegalArgumentException si el pedido no esta asignado a este repartidor
+     */
+    public void quitarPedido(Pedido pedido) {
+        for (int i = 0; i < cantidadPedidos; i++) {
+            if (pedidos[i].getCodigo() == pedido.getCodigo()) {
+                for (int j = i; j < cantidadPedidos - 1; j++) {
+                    pedidos[j] = pedidos[j + 1];
+                }
+
+                pedidos[cantidadPedidos - 1] = null;
+                cantidadPedidos--;
+                return;
+            }
+        }
+
+        throw new IllegalArgumentException("El pedido no esta asignado a este repartidor.");
     }
 }

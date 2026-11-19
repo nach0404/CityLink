@@ -424,5 +424,17 @@ public class CityLink {
 
         return ultima.deshacer(this);
     }
+
+    /**
+     * Pone un pedido al final de la cola de pendientes que le corresponde (urgentes o normales)
+     * @param p pedido pendiente
+     */
+    public void encolarPendiente(Pedido p) {
+        if(p.esUrgente()) {
+            urgentes.offer(p);
+        } else {
+            normales.offer(p);
+        }
+    }
 }
 
