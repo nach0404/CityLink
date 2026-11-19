@@ -308,4 +308,57 @@ public class Repartidor implements Rastreable, Facturable {
                 + ", pedidos asignados: " + pedidos.size()
                 + ", entregas realizadas: " + historial.size();
     }
+
+    /**
+     * Quita un pedido de los asignados al repartidor.
+     * Se utiliza para deshacer una asignación.
+     *
+     * @param pedido pedido que se desea quitar
+     * @throws IllegalArgumentException si el pedido es nulo
+     * o no está asignado a este repartidor
+     */
+    public void quitarPedido(Pedido pedido) {
+
+        if (pedido == null) {
+            throw new IllegalArgumentException(
+                "El pedido no puede ser nulo."
+            );
+        }
+
+        for (int i = 0; i < pedidos.size(); i++) {
+
+            if (pedidos.get(i).getCodigo() == pedido.getCodigo()) {
+                pedidos.remove(i);
+                return;
+            }
+        }
+
+        throw new IllegalArgumentException(
+            "El pedido no está asignado a este repartidor."
+        );
+    }
+
+        /**
+     * Quita una entrega del historial.
+     * Se utiliza cuando se deshace el cambio de estado
+     * de un pedido entregado.
+     *
+     * @param pedido pedido cuya entrega se desea quitar
+     */
+    public void quitarEntrega(Pedido pedido) {
+
+        if (pedido == null) {
+            throw new IllegalArgumentException(
+                "El pedido no puede ser nulo."
+            );
+        }
+
+        for (int i = 0; i < historial.size(); i++) {
+
+            if (historial.get(i).getCodigo() == pedido.getCodigo()) {
+                historial.remove(i);
+                return;
+            }
+        }
+    }
 }

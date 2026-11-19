@@ -40,6 +40,7 @@ Requiere JDK
 - La existencia del cliente la controla el gestor y no `Pedido`, porque es el que tiene la lista de clientes registrados.
 - Un pedido se crea con fecha y estado automaticamente(fecha actual y `PENDIENTE`) para que no se cree uno con un estado inicial incorrecto o una fecha falsa.
 - Si no se encuentra un pedido por su codigo se lanza `PedidoInvalidoException` ya que es checked y es de su dominio.
+- `Busqueda.buscarPedidoBinario` requiere que la lista esté ordenada por código ascendente; no lo verifica, porque comprobarlo en cada llamada costaría O(n) y anularía la ventaja de  O(logn). 
 
 ## Uso de IA
 **Claude**

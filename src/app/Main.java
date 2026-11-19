@@ -98,6 +98,10 @@ public class Main {
                         System.out.println("Gracias por utilizar CityLink.");
                         break;
 
+                    case 11:
+                        deshacerUltimaOperacion();
+                        break;
+
                     default:
                         System.out.println("Opcion incorrecta. Intente nuevamente.");
                 }
@@ -128,6 +132,7 @@ public class Main {
         System.out.println("8. Consultar estado de pedido o repartidor");
         System.out.println("9. Consultar importe total y comisiones");
         System.out.println("10. Salir");
+        System.out.println("11. Deshacer ultima operacion");
         System.out.println("==============================");
     }
 
@@ -501,6 +506,22 @@ public class Main {
         } catch (IllegalArgumentException e) {
 
             System.out.println("No se encontro el repartidor: " + e.getMessage());
+        }
+    }
+
+        // DESHACER ULTIMA OPERACION
+    private static void deshacerUltimaOperacion() {
+
+        try {
+
+            String resultado = sistema.deshacerUltima();
+
+            System.out.println("\n--- DESHACER OPERACION ---");
+            System.out.println(resultado);
+
+        } catch (NadaParaDeshacerException e) {
+
+            System.out.println("No se pudo deshacer: " + e.getMessage());
         }
     }
 }

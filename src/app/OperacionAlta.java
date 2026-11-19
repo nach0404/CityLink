@@ -1,26 +1,31 @@
+
 package app;
 
 import modelo.Pedido;
 
 /**
-* Operación de alta de un pedido. guarda el pedido para poder eliminarlo al deshacer
-*/
+ * Representa la operación de alta de un pedido.
+ * Guarda el pedido para poder eliminarlo al deshacer.
+ */
 public class OperacionAlta implements Operacion {
 
     private Pedido pedido;
-    
+
     /**
-    * Crea la operación de alta guardando el pedido registrado
-    * @param pedido pedido registrado
-    */
+     * Construye una operación de alta.
+     *
+     * @param pedido pedido registrado
+     */
     public OperacionAlta(Pedido pedido) {
         this.pedido = pedido;
     }
 
     /**
-    * Elimina del sistema el pedido dado de alta
-    * @return texto del pedido eliminado
-    */
+     * Elimina del sistema el pedido dado de alta.
+     *
+     * @param gestor sistema CityLink que administra los pedidos
+     * @return texto que describe el pedido eliminado
+     */
     @Override
     public String deshacer(CityLink gestor) {
         gestor.quitarPedido(pedido);
