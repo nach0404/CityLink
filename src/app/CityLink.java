@@ -206,7 +206,11 @@ public class CityLink {
      */
     public void cambiarEstado(int codigoPedido, EstadoPedido nuevo) throws PedidoInvalidoException {
         Pedido pedido = buscarPedido(codigoPedido);
+        EstadoPedido anterior = pedido.getEstado();
         pedido.cambiarEstado(nuevo);
+
+        historial.push(new OperacionCambioEstado(pedido, anterior));
+
     }
 
     /**
